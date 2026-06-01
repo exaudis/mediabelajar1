@@ -2457,8 +2457,14 @@ body {
 
 /* ================= NEW COMPONENT STYLES ================= */
 .teacher-char {
-    max-height: 180px; /* Larger teacher animation */
+    max-height: 135px; /* Tidy up position so it is lower, preventing bubble clipping */
     transition: max-height 0.3s ease;
+}
+
+@media (max-width: 900px) {
+    .teacher-char {
+        max-height: 115px; /* Adjusted down for smaller screens to fit the bubble */
+    }
 }
 
 .teacher-chat-section {
