@@ -2174,10 +2174,10 @@ body {
     z-index: 2;
     display: flex;
     justify-content: space-between;
-    align-items: flex-end; /* Align elements to the bottom grass */
+    align-items: stretch; /* Stretch columns to full height */
     width: 100%;
     height: 100%;
-    padding: 15px 30px;
+    padding: 10px 25px;
     box-sizing: border-box;
 }
 
@@ -2185,35 +2185,37 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-end;
-    width: 200px;
+    justify-content: flex-end; /* Align characters to bottom */
+    width: 195px;
     height: 100%;
     position: relative;
+    flex-shrink: 0;
 }
 
 .character-svg {
-    max-height: 155px; /* Restrict height to prevent stretching */
+    max-height: 135px; /* Compact height to leave plenty of room at the top */
     width: auto;
     object-fit: contain;
-    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.15));
+    mix-blend-mode: multiply; /* Blends white image backgrounds perfectly with the landscape */
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.12));
 }
 
 .speech-bubble {
     background: #ffffff;
     border: 3.5px solid var(--border-color);
     border-radius: 18px;
-    padding: 8px 12px;
+    padding: 8px 10px;
     font-family: 'Fredoka', sans-serif;
     font-weight: 700;
-    font-size: 0.76rem;
+    font-size: 0.74rem;
     color: var(--text-dark);
     line-height: 1.35;
     text-align: center;
     position: relative;
     box-shadow: 0 5px 0 var(--shadow-color);
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     word-wrap: break-word;
-    max-width: 210px;
+    max-width: 195px;
 }
 
 .speech-bubble.left::after {
@@ -2300,7 +2302,7 @@ body {
 .apersepsi-cards-container {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center; /* Vertically center cards in the layout */
     gap: 20px;
     z-index: 3;
     flex: 1;
@@ -2315,7 +2317,7 @@ body {
     flex: 1;
     padding: 0 10px;
     justify-content: center;
-    align-content: center;
+    align-content: center; /* Vertically center grid inside container */
     height: 100%;
 }
 
@@ -2324,13 +2326,13 @@ body {
     border: 4px solid var(--border-color);
     border-radius: 20px;
     padding: 10px;
-    width: 120px;
-    height: 130px;
+    width: 115px;
+    height: 125px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 6px 0 var(--shadow-color);
+    box-shadow: 0 5px 0 var(--shadow-color);
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
     user-select: none;
@@ -2345,7 +2347,7 @@ body {
 
 .apersepsi-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 0 var(--shadow-color);
+    box-shadow: 0 9px 0 var(--shadow-color);
 }
 
 .apersepsi-card:active {
@@ -2355,7 +2357,7 @@ body {
 
 .apersepsi-svg-wrapper {
     width: 100%;
-    height: 70px;
+    height: 65px;
     display: flex;
     justify-content: center;
     align-items: center;
