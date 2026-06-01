@@ -8,6 +8,7 @@ class MathApp {
         // Screen navigation order
         this.baseScreens = [
             'screen-welcome',
+            'screen-profil',
             'screen-instructions',
             'screen-objectives',
             'screen-menu'
@@ -549,11 +550,11 @@ class MathApp {
     selectMeeting(num) {
         this.activeMeeting = num;
         if (num === 1) {
-            this.screensFlow = [...this.baseScreens.slice(0, 4), ...this.p1Screens];
+            this.screensFlow = [...this.baseScreens.slice(0, 5), ...this.p1Screens];
         } else if (num === 2) {
-            this.screensFlow = [...this.baseScreens.slice(0, 4), ...this.p2Screens];
+            this.screensFlow = [...this.baseScreens.slice(0, 5), ...this.p2Screens];
         }
-        this.currentScreenIndex = 4; // First meeting screen (intro or apersepsi)
+        this.currentScreenIndex = 5; // First meeting screen (intro or apersepsi)
         this.showScreen(this.screensFlow[this.currentScreenIndex]);
     }
 

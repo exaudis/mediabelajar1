@@ -211,6 +211,118 @@ body {
     animation: none;
 }
 
+/* ================= PROFIL PENGEMBANG SCREEN ================= */
+#screen-profil {
+    height: 100%;
+    background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 50%, #f9ca24 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profil-layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.profil-card {
+    background-color: #fffdf5;
+    border: 5px solid var(--border-color);
+    border-radius: 28px;
+    box-shadow: 0 10px 0 var(--shadow-color), 0 20px 40px rgba(0,0,0,0.1);
+    padding: 8px;
+    max-width: 480px;
+    width: 90%;
+    animation: profilFadeIn 0.6s ease-out;
+}
+
+@keyframes profilFadeIn {
+    from { transform: scale(0.9) translateY(20px); opacity: 0; }
+    to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.profil-card-border {
+    border: 4px dashed #f39c12;
+    border-radius: 20px;
+    padding: 30px 35px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.profil-icon-box {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    border: 4px solid var(--border-color);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 5px 0 var(--shadow-color);
+    margin-bottom: 15px;
+}
+
+.profil-icon {
+    font-size: 2rem;
+    color: #fff;
+}
+
+.profil-heading {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #636e72;
+    margin-bottom: 6px;
+}
+
+.profil-name {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.05);
+    margin-bottom: 12px;
+}
+
+.profil-divider {
+    width: 60%;
+    height: 4px;
+    background: linear-gradient(to right, transparent, #f39c12, transparent);
+    border-radius: 2px;
+    margin-bottom: 18px;
+}
+
+.profil-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.profil-details p {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.profil-details p i {
+    color: #f39c12;
+    font-size: 1.1rem;
+    width: 22px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
 /* ================= CARD LAYOUT (INSTRUCTIONS & OBJECTIVES) ================= */
 #screen-instructions {
     background-color: #e3fafc;
