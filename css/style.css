@@ -2507,3 +2507,20 @@ body {
 
 .margin-bottom-10 { margin-bottom: 10px; }
 .margin-top-10 { margin-top: 10px; }
+
+/* ================= ENGKLAK GAME SCREEN STYLES ================= */
+.engklak-tile {
+    transition: fill 0.2s, filter 0.2s;
+}
+
+.engklak-tile:hover {
+    filter: brightness(1.08);
+}
+
+.engklak-tile:active {
+    filter: brightness(0.9);
+}
+
+#engklak-avatar-img {
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15));
+}

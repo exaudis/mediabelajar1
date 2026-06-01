@@ -27,6 +27,7 @@ class MathApp {
             'screen-p2-apersepsi',
             'screen-p2-eksplorasi-susun',
             'screen-p2-eksplorasi-urai',
+            'screen-p2-permainan-engklak',
             'screen-p2-selesai'
         ];
 
@@ -174,6 +175,19 @@ class MathApp {
             'decomp-body': false,
             'decomp-door': false
         };
+
+        // Engklak Game State
+        this.engklakLevel = 1;
+        this.engklakPositions = {
+            start: { left: '50%', top: '96%' },
+            'track-lower': { left: '50%', top: '82%' },
+            'track-mid': { left: '50%', top: '63%' },
+            'wings-left': { left: '20%', top: '46%' },
+            'wings-mid': { left: '50%', top: '46%' },
+            'wings-right': { left: '80%', top: '46%' },
+            'track-upper': { left: '50%', top: '29%' },
+            gunung: { left: '50%', top: '11%' }
+        };
     }
 
     init() {
@@ -182,6 +196,7 @@ class MathApp {
         this.setTrianglePreset('samasisi');
         this.setQuadPreset('persegi');
         this.setupDecompositionDragAndDrop();
+        this.setupEngklakGame();
         
         // Window resize listener to keep snapped pieces aligned
         window.addEventListener('resize', () => this.handleResize());
@@ -551,6 +566,8 @@ class MathApp {
             this.setupCompositionPuzzle();
         } else if (screenId === 'screen-p2-eksplorasi-urai') {
             this.resetDecomposition();
+        } else if (screenId === 'screen-p2-permainan-engklak') {
+            this.resetEngklakGame();
         }
 
         // Play completion fanfare for "selesai" screens
@@ -2062,6 +2079,136 @@ class MathApp {
                 }
             }
         }
+    }
+
+    // ================= PERTEMUAN 2: DEDICATED ENGKLAK LOMPAT GAME =================
+    setupEngklakGame() {
+        console.log("Setting up Engklak Lompat Game...");
+        // Add click listeners to engklak SVG tiles
+        document.querySelectorAll('.engklak-tile').forEach(tile => {
+            tile.addEventListener('click', (e) => {
+                const tileName = tile.getAttribute('data-tile');
+                this.handleEngklakTileClick(tileName);
+            });
+        });
+    }
+
+    handleEngklakTileClick(tileName) {
+        if (this.engklakLevel > 5) return; // Game completed
+
+        let isCorrect = false;
+        if (this.engklakLevel === 1 && tileName === 'track-lower') isCorrect = true;
+        else if (this.engklakLevel === 2 && tileName === 'track-mid') isCorrect = true;
+        else if (this.engklakLevel === 3 && (tileName === 'wings-left' || tileName === 'wings-right')) isCorrect = true;
+        else if (this.engklakLevel === 4 && tileName === 'track-upper') isCorrect = true;
+        else if (this.engklakLevel === 5 && tileName === 'gunung') isCorrect = true;
+
+        if (isCorrect) {
+            this.playSound('snap'); // Play jump snap sound
+            
+            // Move avatar to tile position
+            const avatar = document.getElementById('engklak-avatar-img');
+            const pos = this.engklakPositions[tileName];
+            if (avatar && pos) {
+                avatar.style.left = pos.left;
+                avatar.style.top = pos.top;
+            }
+
+            // Quick hover/brightness feedback
+            const tileEl = document.querySelector(`.engklak-tile[data-tile="${tileName}"]`);
+            if (tileEl) {
+                tileEl.style.filter = 'brightness(1.2)';
+                setTimeout(() => {
+                    tileEl.style.filter = '';
+                }, 300);
+            }
+
+            this.engklakLevel++;
+            this.updateEngklakGameUI();
+        } else {
+            this.playSound('wrong'); // Play incorrect sound
+            
+            // Red flash feedback
+            const tileEl = document.querySelector(`.engklak-tile[data-tile="${tileName}"]`);
+            if (tileEl) {
+                const originalFill = tileEl.getAttribute('fill');
+                tileEl.setAttribute('fill', '#ff7675');
+                setTimeout(() => {
+                    tileEl.setAttribute('fill', originalFill);
+                }, 400);
+            }
+
+            // Teacher speech feedback
+            const bubble = document.getElementById('engklak-speech-bubble');
+            if (bubble) {
+                bubble.innerHTML = "Oops! Itu bukan bentuk bangun datar yang diminta Ibu Guru. Coba perhatikan lagi ya!";
+            }
+        }
+    }
+
+    updateEngklakGameUI() {
+        const titleEl = document.getElementById('engklak-question-title');
+        const descEl = document.getElementById('engklak-question-desc');
+        const bubble = document.getElementById('engklak-speech-bubble');
+        
+        if (this.engklakLevel === 1) {
+            if (titleEl) titleEl.textContent = "Langkah 1 dari 5";
+            if (descEl) descEl.textContent = "Bantu Lina melompat ke Pola Bawah.";
+            if (bubble) bubble.innerHTML = "Halo! Mari kita bermain engklak. Klik <strong>Pola Bawah (nomor 1 & 2)</strong> yang berbentuk <strong>Persegi Panjang</strong> untuk mulai melompat!";
+        } else if (this.engklakLevel === 2) {
+            if (titleEl) titleEl.textContent = "Langkah 2 dari 5";
+            if (descEl) descEl.textContent = "Bantu Lina melompat ke Pola Tengah.";
+            if (bubble) bubble.innerHTML = "Bagus sekali! Lina sudah berada di pola bawah. Sekarang, klik <strong>Pola Tengah (nomor 3)</strong> yang berbentuk <strong>Persegi</strong>!";
+        } else if (this.engklakLevel === 3) {
+            if (titleEl) titleEl.textContent = "Langkah 3 dari 5";
+            if (descEl) descEl.textContent = "Bantu Lina melompat ke Sayap Lintasan.";
+            if (bubble) bubble.innerHTML = "Keren! Sekarang Lina harus melompat lebar ke sayap. Klik <strong>Sayap Kiri (nomor 4) atau Sayap Kanan (nomor 6)</strong> yang berbentuk <strong>Persegi Panjang</strong>!";
+        } else if (this.engklakLevel === 4) {
+            if (titleEl) titleEl.textContent = "Langkah 4 dari 5";
+            if (descEl) descEl.textContent = "Bantu Lina melompat ke Pola Atas.";
+            if (bubble) bubble.innerHTML = "Hebat! Lina melompat dengan lincah. Sekarang, klik <strong>Pola Atas (nomor 7)</strong> yang berbentuk <strong>Persegi</strong>!";
+        } else if (this.engklakLevel === 5) {
+            if (titleEl) titleEl.textContent = "Langkah 5 dari 5";
+            if (descEl) descEl.textContent = "Bantu Lina melompat ke Gunung.";
+            if (bubble) bubble.innerHTML = "Luar biasa! Tinggal selangkah lagi menuju puncak. Klik <strong>Gunung</strong> di paling atas yang berbentuk <strong>Setengah Lingkaran</strong>!";
+        } else if (this.engklakLevel > 5) {
+            if (titleEl) titleEl.textContent = "Permainan Selesai!";
+            if (descEl) descEl.textContent = "Lina berhasil mencapai puncak gunung!";
+            if (bubble) bubble.innerHTML = "Luar biasa! Kamu hebat sekali sudah membantu Lina menyelesaikan permainan engklak dan mengenal bentuk-bentuk bangun datarnya!";
+            
+            // Show victory screen
+            setTimeout(() => {
+                this.playSound('success');
+                const successBanner = document.getElementById('engklak-game-success');
+                if (successBanner) successBanner.classList.remove('hide');
+            }, 500);
+        }
+    }
+
+    resetEngklakGame() {
+        this.engklakLevel = 1;
+        
+        // Hide success banner
+        const successBanner = document.getElementById('engklak-game-success');
+        if (successBanner) successBanner.classList.add('hide');
+
+        // Reset avatar position to start
+        const avatar = document.getElementById('engklak-avatar-img');
+        const pos = this.engklakPositions['start'];
+        if (avatar && pos) {
+            avatar.style.left = pos.left;
+            avatar.style.top = pos.top;
+        }
+
+        this.updateEngklakGameUI();
+    }
+
+    goToEngklakGame() {
+        this.playSound('click');
+        this.selectMeeting(2);
+        this.currentScreenIndex = 8; // index of screen-p2-permainan-engklak in screensFlow
+        this.showScreen('screen-p2-permainan-engklak');
+        this.resetEngklakGame();
     }
 }
 
