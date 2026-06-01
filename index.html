@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Manipulative Math Berbasis RME</title>
+    <!-- Google Fonts for cute, playful UI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@500;700&display=swap"
+        rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Sound Effects Toggle (top-right) -->
+    <button id="sound-toggle" class="sound-btn" onclick="app.toggleSound()" title="Aktifkan/Matikan Suara">
+        <i class="fas fa-volume-up"></i>
+    </button>
+
+    <!-- Main Game Container (16:9 Aspect Ratio) -->
+    <div id="game-container" class="game-container">
+
+        <!-- ================= WELCOME SCREEN ================= -->
+        <section id="screen-welcome" class="screen active">
+            <div class="welcome-content">
+                <h1 class="welcome-title">
+                    <span class="title-virtual">Virtual</span><br>
+                    <span class="title-manipulative">Manipulative Math</span><br>
+                    <span class="title-rme">Berbasis RME</span>
+                </h1>
+                <div class="subtitle-box">
+                    <p>Belajar Bangun Datar jadi lebih menyenangkan!</p>
+                </div>
+                <button id="btn-start" class="btn-green-large pulse-animation" onclick="app.nextScreen()">
+                    START
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= INSTRUCTION SCREEN ================= -->
+        <section id="screen-instructions" class="screen">
+            <div class="card-layout">
+                <!-- Left: Mascot holding kite -->
+                <div class="mascot-side">
+                    <img src="assets/images/instruction_kid.png" alt="Anak Bermain Layangan" class="mascot-img">
+                </div>
+                <!-- Right: Instructions Card -->
+                <div class="info-card">
+                    <div class="card-header blue-tab">
+                        <h2>Petunjuk Penggunaan</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="instruction-row">
+                            <div class="instruction-icon bg-blue">
+                                <i class="fas fa-arrow-left"></i>
+                            </div>
+                            <div class="instruction-text">
+                                <strong>KEMBALI</strong>: Gunakan tombol KEMBALI untuk kembali ke halaman sebelumnya.
+                            </div>
+                        </div>
+                        <div class="instruction-row">
+                            <div class="instruction-icon bg-orange">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <div class="instruction-text">
+                                <strong>HOME / MENU</strong>: Gunakan tombol HOME / MENU untuk kembali ke tampilan awal
+                                atau menu utama.
+                            </div>
+                        </div>
+                        <div class="instruction-row">
+                            <div class="instruction-icon bg-green">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                            <div class="instruction-text">
+                                <strong>SELANJUTNYA</strong>: Gunakan tombol SELANJUTNYA untuk menuju halaman
+                                berikutnya.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= OBJECTIVES SCREEN ================= -->
+        <section id="screen-objectives" class="screen">
+            <div class="card-layout reverse">
+                <!-- Left: Objectives Card -->
+                <div class="info-card">
+                    <div class="card-header purple-tab">
+                        <h2>Tujuan Pembelajaran</h2>
+                    </div>
+                    <div class="card-body">
+                        <ol class="objectives-list">
+                            <li>Menuliskan ciri-ciri segitiga (sama kaki, sama sisi, sembarang, lancip, tumpul, dan
+                                siku-siku).</li>
+                            <li>Menuliskan ciri-ciri segi empat (jajargenjang, trapesium, layang-layang, belah ketupat,
+                                persegi, persegi panjang, dan segi empat sembarang).</li>
+                            <li>Menyusun beberapa bangun datar dengan berbagai cara (komposisi).</li>
+                            <li>Mengurai (dekomposisi) satu bangun datar dengan berbagai cara.</li>
+                        </ol>
+                    </div>
+                </div>
+                <!-- Right: Mascot pointing to target -->
+                <div class="mascot-side">
+                    <img src="assets/images/tujuan_kid.png" alt="Anak Menunjuk Sasaran" class="mascot-img">
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= MAIN MENU SCREEN ================= -->
+        <section id="screen-menu" class="screen">
+            <div class="menu-layout">
+                <!-- Wood Hanging Title -->
+                <div class="wood-title">
+                    <span>PILIH MENU</span>
+                </div>
+
+                <div class="menu-grid">
+                    <!-- Column 1: Pertemuan 1 -->
+                    <div class="menu-card" onclick="app.selectMeeting(1)">
+                        <div class="menu-card-header">
+                            <h3>PERTEMUAN 1</h3>
+                            <p class="menu-desc">MENGENAL CIRI-CIRI BANGUN DATAR</p>
+                        </div>
+                        <div class="menu-card-body">
+                            <!-- Showcase items -->
+                            <div class="shapes-preview">
+                                <svg viewBox="0 0 100 80" class="mini-svg">
+                                    <polygon points="50,10 90,70 10,70" fill="#ff7675" stroke="#2d3436"
+                                        stroke-width="3" />
+                                </svg>
+                                <svg viewBox="0 0 100 80" class="mini-svg">
+                                    <rect x="15" y="15" width="70" height="50" fill="#74b9ff" stroke="#2d3436"
+                                        stroke-width="3" />
+                                </svg>
+                                <svg viewBox="0 0 100 80" class="mini-svg">
+                                    <polygon points="30,15 85,15 70,65 15,65" fill="#ffeaa7" stroke="#2d3436"
+                                        stroke-width="3" />
+                                </svg>
+                            </div>
+                            <span class="btn-menu-action">Mulai Belajar</span>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Pertemuan 2 -->
+                    <div class="menu-card" onclick="app.selectMeeting(2)">
+                        <div class="menu-card-header">
+                            <h3>PERTEMUAN 2</h3>
+                            <p class="menu-desc">KOMPOSISI & DEKOMPOSISI BANGUN DATAR</p>
+                        </div>
+                        <div class="menu-card-body">
+                            <!-- Showcase items -->
+                            <div class="shapes-preview">
+                                <svg viewBox="0 0 100 80" class="mini-svg">
+                                    <!-- Mini house composition -->
+                                    <polygon points="50,10 80,40 20,40" fill="#ff7675" stroke="#2d3436"
+                                        stroke-width="2" />
+                                    <rect x="25" y="40" width="50" height="30" fill="#a29bfe" stroke="#2d3436"
+                                        stroke-width="2" />
+                                </svg>
+                                <svg viewBox="0 0 100 80" class="mini-svg">
+                                    <!-- Mini ship composition -->
+                                    <polygon points="15,45 85,45 70,65 30,65" fill="#ffeaa7" stroke="#2d3436"
+                                        stroke-width="2" />
+                                    <polygon points="50,15 50,45 25,45" fill="#55efc4" stroke="#2d3436"
+                                        stroke-width="2" />
+                                </svg>
+                            </div>
+                            <span class="btn-menu-action">Mulai Bermain</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mascot walking on stilts -->
+                <div class="stilts-mascot">
+                    <img src="assets/images/menu_boy_stilts.png" alt="Anak Bermain Egrang" class="mascot-img-stilts">
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PERTEMUAN 1: INTRO ================= -->
+        <section id="screen-p1-intro" class="screen">
+            <div class="intro-layout">
+                <!-- Pencil Banner Title -->
+                <div class="pencil-banner">
+                    <div class="pencil-body">
+                        <span>Petualangan Mengenal Segitiga & Segiempat</span>
+                    </div>
+                </div>
+
+                <div class="intro-content-box">
+                    <p class="story-text">
+                        Halo teman-teman! Selamat datang di Pertemuan 1. Hari ini kita akan menjelajah dan mengenal
+                        ciri-ciri berbagai bentuk bangun datar di sekitar kita. Mari bantu teman-teman kita menyelidiki
+                        sifat-sifat sudut dan sisi pada segitiga dan segiempat agar kita tahu rahasia di balik bentuk
+                        mereka!
+                    </p>
+                </div>
+
+                <!-- Background decorative playing kids -->
+                <div class="intro-bg-decor">
+                    <img src="assets/images/adventure_kids.png" alt="Anak Bermain Bersama" class="kids-group-img">
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PERTEMUAN 1: APERSEPSI ================= -->
+        <section id="screen-p1-apersepsi" class="screen">
+            <div class="activity-container">
+                <h2 class="activity-title text-center">Benda Nyata di Sekitar Kita</h2>
+                <p class="activity-subtitle text-center">Sebelum mulai mengukur, perhatikan benda-benda nyata yang
+                    sering kita jumpai berikut ini!</p>
+
+                <div class="apersepsi-grid">
+                    <!-- Segitiga Examples -->
+                    <div class="apersepsi-col">
+                        <h3 class="shape-type-title color-red">Benda Berbentuk Segitiga</h3>
+                        <div class="item-showcase-row">
+                            <div class="item-card">
+                                <div class="item-svg-box">
+                                    <!-- Hanger -->
+                                    <svg viewBox="0 0 100 80" class="showcase-svg">
+                                        <path
+                                            d="M50,15 C52,10 48,10 50,5 C53,0 58,10 54,15 L90,60 C93,65 90,68 85,68 L15,68 C10,68 7,65 10,60 Z"
+                                            fill="none" stroke="#e67e22" stroke-width="4" />
+                                        <line x1="15" y1="62" x2="85" y2="62" stroke="#e67e22" stroke-width="3" />
+                                    </svg>
+                                </div>
+                                <span>Gantungan Baju</span>
+                            </div>
+                            <div class="item-card">
+                                <div class="item-svg-box">
+                                    <!-- Tricky Triangle / Peg Game -->
+                                    <svg viewBox="0 0 100 80" class="showcase-svg">
+                                        <polygon points="50,10 90,70 10,70" fill="#d35400" stroke="#2c3e50"
+                                            stroke-width="3" />
+                                        <!-- Pegs -->
+                                        <circle cx="50" cy="25" r="4" fill="#f1c40f" />
+                                        <circle cx="40" cy="45" r="4" fill="#f1c40f" />
+                                        <circle cx="60" cy="45" r="4" fill="#f1c40f" />
+                                        <circle cx="30" cy="62" r="4" fill="#f1c40f" />
+                                        <circle cx="50" cy="62" r="4" fill="#f1c40f" />
+                                        <circle cx="70" cy="62" r="4" fill="#f1c40f" />
+                                    </svg>
+                                </div>
+                                <span>Tricky Triangle</span>
+                            </div>
+                            <div class="item-card">
+                                <div class="item-svg-box">
+                                    <!-- Sandwich -->
+                                    <svg viewBox="0 0 100 80" class="showcase-svg">
+                                        <!-- Bread bottom -->
+                                        <polygon points="10,65 85,15 85,65" fill="#f39c12" stroke="#d35400"
+                                            stroke-width="3" />
+                                        <!-- Fillings -->
+                                        <polygon points="12,63 83,18 83,63" fill="#2ecc71" />
+                                        <line x1="15" y1="62" x2="82" y2="18" stroke="#e74c3c" stroke-width="6" />
+                                        <!-- Cheese/Bread top -->
+                                        <polygon points="15,60 80,20 80,60" fill="#f1c40f" />
+                                    </svg>
+                                </div>
+                                <span>Potongan Sandwich</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Segiempat Examples -->
+                    <div class="apersepsi-col">
+                        <h3 class="shape-type-title color-blue">Benda Berbentuk Segiempat</h3>
+                        <div class="item-showcase-row">
+                            <div class="item-card">
+                                <div class="item-svg-box">
+                                    <!-- Wall Clock -->
+                                    <svg viewBox="0 0 100 80" class="showcase-svg">
+                                        <rect x="20" y="10" width="60" height="60" rx="10" fill="#3498db"
+                                            stroke="#2980b9" stroke-width="4" />
+                                        <circle cx="50" cy="40" r="22" fill="#fff" stroke="#2c3e50" stroke-width="2" />
+                                        <line x1="50" y1="40" x2="50" y2="26" stroke="#2c3e50" stroke-width="3"
+                                            stroke-linecap="round" />
+                                        <line x1="50" y1="40" x2="62" y2="40" stroke="#e74c3c" stroke-width="2"
+                                            stroke-linecap="round" />
+                                    </svg>
+                                </div>
+                                <span>Jam Dinding</span>
+                            </div>
+                            <div class="item-card">
+                                <div class="item-svg-box">
+                                    <!-- Road Sign (Yellow Diamond) -->
+                                    <svg viewBox="0 0 100 80" class="showcase-svg">
+                                        <polygon points="50,5 85,40 50,75 15,40" fill="#f1c40f" stroke="#2c3e50"
+                                            stroke-width="4" />
+                                        <!-- Sloping car symbol inside -->
+                                        <path d="M35,48 L45,43 L65,43 L70,48" stroke="#2c3e50" stroke-width="3"
+                                            fill="none" />
+                                        <circle cx="43" cy="51" r="3" fill="#2c3e50" />
+                                        <circle cx="62" cy="51" r="3" fill="#2c3e50" />
+                                    </svg>
+                                </div>
+                                <span>Rambu Jalan</span>
+                            </div>
+                            <div class="item-card">
+                                <div class="item-svg-box">
+                                    <!-- Solar Panel -->
+                                    <svg viewBox="0 0 100 80" class="showcase-svg">
+                                        <polygon points="20,15 80,15 90,65 10,65" fill="#2c3e50" stroke="#7f8c8d"
+                                            stroke-width="4" />
+                                        <!-- Grid lines -->
+                                        <line x1="35" y1="15" x2="30" y2="65" stroke="#bdc3c7" stroke-width="2" />
+                                        <line x1="50" y1="15" x2="50" y2="65" stroke="#bdc3c7" stroke-width="2" />
+                                        <line x1="65" y1="15" x2="70" y2="65" stroke="#bdc3c7" stroke-width="2" />
+                                        <line x1="17" y1="30" x2="83" y2="30" stroke="#bdc3c7" stroke-width="2" />
+                                        <line x1="14" y1="48" x2="86" y2="48" stroke="#bdc3c7" stroke-width="2" />
+                                    </svg>
+                                </div>
+                                <span>Panel Surya</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PERTEMUAN 1: EKSPLORASI SEGITIGA ================= -->
+        <section id="screen-p1-eksplorasi-segitiga" class="screen">
+            <div class="workspace-layout">
+                <!-- Left: Exploration area -->
+                <div class="manipulative-area">
+                    <div class="area-header">
+                        <span class="badge red">Eksplorasi</span>
+                        <h2>Selidiki Sudut & Sisi Segitiga</h2>
+                    </div>
+
+                    <!-- Presets Selector -->
+                    <div class="preset-selector">
+                        <button class="preset-btn active" id="btn-tri-samasisi"
+                            onclick="app.setTrianglePreset('samasisi')">Sama Sisi</button>
+                        <button class="preset-btn" id="btn-tri-samakaki"
+                            onclick="app.setTrianglePreset('samakaki')">Sama Kaki</button>
+                        <button class="preset-btn" id="btn-tri-sikusiku"
+                            onclick="app.setTrianglePreset('sikusiku')">Siku-Siku</button>
+                        <button class="preset-btn" id="btn-tri-sembarang"
+                            onclick="app.setTrianglePreset('sembarang')">Sembarang</button>
+                    </div>
+
+                    <!-- Shape Display Board -->
+                    <div class="canvas-board" id="triangle-board">
+                        <div class="instruction-bubble">
+                            <i class="fas fa-hand-pointer"></i> Klik pada <strong>sudut (titik bulat)</strong> atau
+                            <strong>sisi (garis)</strong> segitiga untuk mengukurnya!
+                        </div>
+
+                        <!-- Interactive SVG Triangle -->
+                        <div class="svg-wrapper">
+                            <svg viewBox="0 0 400 280" id="svg-triangle" class="interactive-svg">
+                                <!-- Background grid pattern for children math visual -->
+                                <defs>
+                                    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                                        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#f1f2f6" stroke-width="1.5" />
+                                    </pattern>
+                                </defs>
+                                <rect width="100%" height="100%" fill="url(#grid)" />
+
+                                <!-- Sides -->
+                                <g class="interactive-edge" data-edge="AB" onclick="app.clickEdge('AB')">
+                                    <line x1="200" y1="40" x2="320" y2="220" class="edge-line" id="line-AB" />
+                                    <line x1="200" y1="40" x2="320" y2="220" class="edge-hover-zone" />
+                                    <g class="badge-group" id="badge-AB" transform="translate(0, 0)">
+                                        <rect width="60" height="22" rx="6" class="value-badge-bg" />
+                                        <text x="30" y="12" class="value-text" id="text-AB">Sisi AB</text>
+                                    </g>
+                                </g>
+                                <g class="interactive-edge" data-edge="BC" onclick="app.clickEdge('BC')">
+                                    <line x1="320" y1="220" x2="80" y2="220" class="edge-line" id="line-BC" />
+                                    <line x1="320" y1="220" x2="80" y2="220" class="edge-hover-zone" />
+                                    <g class="badge-group" id="badge-BC" transform="translate(0, 0)">
+                                        <rect width="60" height="22" rx="6" class="value-badge-bg" />
+                                        <text x="30" y="12" class="value-text" id="text-BC">Sisi BC</text>
+                                    </g>
+                                </g>
+                                <g class="interactive-edge" data-edge="CA" onclick="app.clickEdge('CA')">
+                                    <line x1="80" y1="220" x2="200" y2="40" class="edge-line" id="line-CA" />
+                                    <line x1="80" y1="220" x2="200" y2="40" class="edge-hover-zone" />
+                                    <g class="badge-group" id="badge-CA" transform="translate(0, 0)">
+                                        <rect width="60" height="22" rx="6" class="value-badge-bg" />
+                                        <text x="30" y="12" class="value-text" id="text-CA">Sisi CA</text>
+                                    </g>
+                                </g>
+
+                                <!-- Vertices / Corners -->
+                                <circle cx="200" cy="40" r="14" class="vertex-node" id="node-A"
+                                    onclick="app.clickVertex('A')" />
+                                <text x="200" y="22" class="vertex-label">A</text>
+
+                                <circle cx="320" cy="220" r="14" class="vertex-node" id="node-B"
+                                    onclick="app.clickVertex('B')" />
+                                <text x="342" y="225" class="vertex-label">B</text>
+
+                                <circle cx="80" cy="220" r="14" class="vertex-node" id="node-C"
+                                    onclick="app.clickVertex('C')" />
+                                <text x="58" y="225" class="vertex-label">C</text>
+                            </svg>
+                        </div>
+
+                        <!-- Dynamic Tooltip Display -->
+                        <div id="triangle-measurement-popup" class="measurement-popup hide">
+                            <span id="triangle-popup-text">Klik sudut atau sisi segitiga!</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Observation card and mini-quiz -->
+                <div class="sidebar-card">
+                    <div class="card-header yellow-tab">
+                        <h3>Catatan Hasil Ukur</h3>
+                    </div>
+                    <div class="card-body scrollable">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Sudut</th>
+                                    <th>Besar</th>
+                                    <th>Sisi</th>
+                                    <th>Panjang</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>&ang;A</td>
+                                    <td id="val-angle-A" class="empty-val">-</td>
+                                    <td>AB</td>
+                                    <td id="val-side-AB" class="empty-val">-</td>
+                                </tr>
+                                <tr>
+                                    <td>&ang;B</td>
+                                    <td id="val-angle-B" class="empty-val">-</td>
+                                    <td>BC</td>
+                                    <td id="val-side-BC" class="empty-val">-</td>
+                                </tr>
+                                <tr>
+                                    <td>&ang;C</td>
+                                    <td id="val-angle-C" class="empty-val">-</td>
+                                    <td>CA</td>
+                                    <td id="val-side-CA" class="empty-val">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Shape Identifier Section -->
+                        <div class="identification-box">
+                            <h4>Tebak Jenis Segitiga:</h4>
+                            <p class="quiz-instruction-text">Berdasarkan hasil pengukuran di tabel, pilih jenis segitiga
+                                ini:</p>
+                            <div class="quiz-options">
+                                <button class="quiz-opt" id="opt-tri-samasisi"
+                                    onclick="app.verifyTriangleAnswer('samasisi')">Segitiga Sama Sisi</button>
+                                <button class="quiz-opt" id="opt-tri-samakaki"
+                                    onclick="app.verifyTriangleAnswer('samakaki')">Segitiga Sama Kaki</button>
+                                <button class="quiz-opt" id="opt-tri-sikusiku"
+                                    onclick="app.verifyTriangleAnswer('sikusiku')">Segitiga Siku-Siku</button>
+                                <button class="quiz-opt" id="opt-tri-sembarang"
+                                    onclick="app.verifyTriangleAnswer('sembarang')">Segitiga Sembarang</button>
+                            </div>
+                            <div id="triangle-quiz-feedback" class="quiz-feedback hide"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PERTEMUAN 1: EKSPLORASI SEGIEMPAT ================= -->
+        <section id="screen-p1-eksplorasi-segiempat" class="screen">
+            <div class="workspace-layout">
+                <!-- Left: Exploration area -->
+                <div class="manipulative-area">
+                    <div class="area-header">
+                        <span class="badge blue">Eksplorasi</span>
+                        <h2>Selidiki Sudut & Sisi Segiempat</h2>
+                    </div>
+
+                    <!-- Presets Selector -->
+                    <div class="preset-selector scrollable-x">
+                        <button class="preset-btn active" id="btn-quad-persegi"
+                            onclick="app.setQuadPreset('persegi')">Persegi</button>
+                        <button class="preset-btn" id="btn-quad-persegipanjang"
+                            onclick="app.setQuadPreset('persegipanjang')">Persegi Panjang</button>
+                        <button class="preset-btn" id="btn-quad-jajargenjang"
+                            onclick="app.setQuadPreset('jajargenjang')">Jajargenjang</button>
+                        <button class="preset-btn" id="btn-quad-trapesium"
+                            onclick="app.setQuadPreset('trapesium')">Trapesium</button>
+                        <button class="preset-btn" id="btn-quad-layanglayang"
+                            onclick="app.setQuadPreset('layanglayang')">Layang-layang</button>
+                        <button class="preset-btn" id="btn-quad-belahketupat"
+                            onclick="app.setQuadPreset('belahketupat')">Belah Ketupat</button>
+                    </div>
+
+                    <!-- Shape Display Board -->
+                    <div class="canvas-board" id="quad-board">
+                        <div class="instruction-bubble">
+                            <i class="fas fa-hand-pointer"></i> Klik pada <strong>sudut (titik bulat)</strong> atau
+                            <strong>sisi (garis)</strong> segiempat untuk mengukurnya!
+                        </div>
+
+                        <!-- Interactive SVG Quadrilateral -->
+                        <div class="svg-wrapper">
+                            <svg viewBox="0 0 400 280" id="svg-quad" class="interactive-svg">
+                                <rect width="100%" height="100%" fill="url(#grid)" />
+                                <!-- Sides -->
+                                <g class="interactive-edge" data-edge="AB" onclick="app.clickQuadEdge('AB')">
+                                    <line x1="120" y1="50" x2="280" y2="50" class="edge-line" id="qline-AB" />
+                                    <line x1="120" y1="50" x2="280" y2="50" class="edge-hover-zone" />
+                                    <g class="badge-group" id="qbadge-AB" transform="translate(0, 0)">
+                                        <rect width="60" height="22" rx="6" class="value-badge-bg" />
+                                        <text x="30" y="12" class="value-text" id="qtext-AB">AB</text>
+                                    </g>
+                                </g>
+                                <g class="interactive-edge" data-edge="BC" onclick="app.clickQuadEdge('BC')">
+                                    <line x1="280" y1="50" x2="280" y2="210" class="edge-line" id="qline-BC" />
+                                    <line x1="280" y1="50" x2="280" y2="210" class="edge-hover-zone" />
+                                    <g class="badge-group" id="qbadge-BC" transform="translate(0, 0)">
+                                        <rect width="60" height="22" rx="6" class="value-badge-bg" />
+                                        <text x="30" y="12" class="value-text" id="qtext-BC">BC</text>
+                                    </g>
+                                </g>
+                                <g class="interactive-edge" data-edge="CD" onclick="app.clickQuadEdge('CD')">
+                                    <line x1="280" y1="210" x2="120" y2="210" class="edge-line" id="qline-CD" />
+                                    <line x1="280" y1="210" x2="120" y2="210" class="edge-hover-zone" />
+                                    <g class="badge-group" id="qbadge-CD" transform="translate(0, 0)">
+                                        <rect width="60" height="22" rx="6" class="value-badge-bg" />
+                                        <text x="30" y="12" class="value-text" id="qtext-CD">CD</text>
+                                    </g>
+                                </g>
+                                <g class="interactive-edge" data-edge="DA" onclick="app.clickQuadEdge('DA')">
+                                    <line x1="120" y1="210" x2="120" y2="50" class="edge-line" id="qline-DA" />
+                                    <line x1="120" y1="210" x2="120" y2="50" class="edge-hover-zone" />
+                                    <g class="badge-group" id="qbadge-DA" transform="translate(0, 0)">
+                                        <rect width="60" height="22" rx="6" class="value-badge-bg" />
+                                        <text x="30" y="12" class="value-text" id="qtext-DA">DA</text>
+                                    </g>
+                                </g>
+
+                                <!-- Vertices -->
+                                <circle cx="120" cy="50" r="14" class="vertex-node" id="qnode-A"
+                                    onclick="app.clickQuadVertex('A')" />
+                                <text x="100" y="45" class="vertex-label">A</text>
+
+                                <circle cx="280" cy="50" r="14" class="vertex-node" id="qnode-B"
+                                    onclick="app.clickQuadVertex('B')" />
+                                <text x="300" y="45" class="vertex-label">B</text>
+
+                                <circle cx="280" cy="210" r="14" class="vertex-node" id="qnode-C"
+                                    onclick="app.clickQuadVertex('C')" />
+                                <text x="300" y="225" class="vertex-label">C</text>
+
+                                <circle cx="120" cy="210" r="14" class="vertex-node" id="qnode-D"
+                                    onclick="app.clickQuadVertex('D')" />
+                                <text x="100" y="225" class="vertex-label">D</text>
+                            </svg>
+                        </div>
+
+                        <!-- Dynamic Tooltip Display -->
+                        <div id="quad-measurement-popup" class="measurement-popup hide">
+                            <span id="quad-popup-text">Klik sudut atau sisi segiempat!</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Observation card and mini-quiz -->
+                <div class="sidebar-card">
+                    <div class="card-header yellow-tab">
+                        <h3>Catatan Hasil Ukur</h3>
+                    </div>
+                    <div class="card-body scrollable">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Sudut</th>
+                                    <th>Besar</th>
+                                    <th>Sisi</th>
+                                    <th>Panjang</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>&ang;A</td>
+                                    <td id="qval-angle-A" class="empty-val">-</td>
+                                    <td>AB</td>
+                                    <td id="qval-side-AB" class="empty-val">-</td>
+                                </tr>
+                                <tr>
+                                    <td>&ang;B</td>
+                                    <td id="qval-angle-B" class="empty-val">-</td>
+                                    <td>BC</td>
+                                    <td id="qval-side-BC" class="empty-val">-</td>
+                                </tr>
+                                <tr>
+                                    <td>&ang;C</td>
+                                    <td id="qval-angle-C" class="empty-val">-</td>
+                                    <td>CD</td>
+                                    <td id="qval-side-CD" class="empty-val">-</td>
+                                </tr>
+                                <tr>
+                                    <td>&ang;D</td>
+                                    <td id="qval-angle-D" class="empty-val">-</td>
+                                    <td>DA</td>
+                                    <td id="qval-side-DA" class="empty-val">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Shape Identifier Section -->
+                        <div class="identification-box">
+                            <h4>Tebak Jenis Segiempat:</h4>
+                            <p class="quiz-instruction-text">Berdasarkan hasil pengukuran di tabel, pilih jenis
+                                segiempat ini:</p>
+                            <div class="quiz-options">
+                                <button class="quiz-opt-q" id="opt-quad-persegi"
+                                    onclick="app.verifyQuadAnswer('persegi')">Persegi</button>
+                                <button class="quiz-opt-q" id="opt-quad-persegipanjang"
+                                    onclick="app.verifyQuadAnswer('persegipanjang')">Persegi Panjang</button>
+                                <button class="quiz-opt-q" id="opt-quad-jajargenjang"
+                                    onclick="app.verifyQuadAnswer('jajargenjang')">Jajargenjang</button>
+                                <button class="quiz-opt-q" id="opt-quad-trapesium"
+                                    onclick="app.verifyQuadAnswer('trapesium')">Trapesium</button>
+                                <button class="quiz-opt-q" id="opt-quad-layanglayang"
+                                    onclick="app.verifyQuadAnswer('layanglayang')">Layang-layang</button>
+                                <button class="quiz-opt-q" id="opt-quad-belahketupat"
+                                    onclick="app.verifyQuadAnswer('belahketupat')">Belah Ketupat</button>
+                            </div>
+                            <div id="quad-quiz-feedback" class="quiz-feedback hide"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PERTEMUAN 1: SELESAI ================= -->
+        <section id="screen-p1-selesai" class="screen">
+            <div class="conclusion-layout">
+                <div class="trophy-box">
+                    <i class="fas fa-trophy trophy-icon text-yellow"></i>
+                </div>
+                <h2>Selamat! Kamu Menyelesaikan Pertemuan 1</h2>
+                <div class="intro-content-box text-center">
+                    <p>
+                        Hebat sekali! Kamu telah berhasil meneliti ciri-ciri sudut dan panjang sisi dari berbagai macam
+                        segitiga dan segiempat. Sekarang kamu sudah tahu cara membedakannya!
+                    </p>
+                </div>
+                <button class="btn-green-large" onclick="app.goToMenu()">Kembali ke Menu Utama</button>
+            </div>
+        </section>
+
+
+        <!-- ================= PERTEMUAN 2: APERSEPSI ================= -->
+        <section id="screen-p2-apersepsi" class="screen">
+            <div class="activity-container">
+                <h2 class="activity-title text-center">Bentuk Kompleks di Sekitar Kita</h2>
+                <p class="activity-subtitle text-center">Di sekitar kita, bentuk-bentuk yang kompleks dibentuk dari
+                    gabungan beberapa bangun datar sederhana!</p>
+
+                <div class="apersepsi-grid-p2">
+                    <!-- Engklek -->
+                    <div class="apersepsi-card-p2">
+                        <div class="apersepsi-svg-box-p2">
+                            <!-- Engklek/Hopscotch Layout -->
+                            <svg viewBox="0 0 120 180" class="showcase-svg">
+                                <rect x="45" y="140" width="30" height="30" fill="#ffeaa7" stroke="#2c3e50"
+                                    stroke-width="2" />
+                                <text x="56" y="160" font-family="Fredoka" font-size="16" fill="#2c3e50">1</text>
+
+                                <rect x="45" y="110" width="30" height="30" fill="#fab1a0" stroke="#2c3e50"
+                                    stroke-width="2" />
+                                <text x="55" y="130" font-family="Fredoka" font-size="16" fill="#2c3e50">2</text>
+
+                                <rect x="45" y="80" width="30" height="30" fill="#74b9ff" stroke="#2c3e50"
+                                    stroke-width="2" />
+                                <text x="55" y="100" font-family="Fredoka" font-size="16" fill="#2c3e50">3</text>
+
+                                <rect x="15" y="50" width="30" height="30" fill="#81ecec" stroke="#2c3e50"
+                                    stroke-width="2" />
+                                <text x="25" y="70" font-family="Fredoka" font-size="16" fill="#2c3e50">4</text>
+                                <rect x="45" y="50" width="30" height="30" fill="#a29bfe" stroke="#2c3e50"
+                                    stroke-width="2" />
+                                <text x="55" y="70" font-family="Fredoka" font-size="16" fill="#2c3e50">5</text>
+                                <rect x="75" y="50" width="30" height="30" fill="#81ecec" stroke="#2c3e50"
+                                    stroke-width="2" />
+                                <text x="85" y="70" font-family="Fredoka" font-size="16" fill="#2c3e50">6</text>
+
+                                <rect x="45" y="20" width="30" height="30" fill="#ff7675" stroke="#2c3e50"
+                                    stroke-width="2" />
+                                <text x="55" y="40" font-family="Fredoka" font-size="16" fill="#2c3e50">7</text>
+
+                                <path d="M45,20 C45,5 75,5 75,20 Z" fill="#55efc4" stroke="#2c3e50" stroke-width="2" />
+                                <text x="55" y="16" font-family="Fredoka" font-size="10" fill="#2c3e50">Gunung</text>
+                            </svg>
+                        </div>
+                        <h3>Pola Lantai Engklek</h3>
+                        <p>Tersusun atas bentuk persegi, persegi panjang, dan setengah lingkaran/kubah.</p>
+                    </div>
+
+                    <!-- Ship -->
+                    <div class="apersepsi-card-p2">
+                        <div class="apersepsi-svg-box-p2">
+                            <!-- Geometric Ship -->
+                            <svg viewBox="0 0 160 120" class="showcase-svg">
+                                <!-- Body -->
+                                <polygon points="20,70 140,70 120,100 40,100" fill="#ffeaa7" stroke="#2c3e50"
+                                    stroke-width="3" />
+                                <!-- Sails -->
+                                <polygon points="80,15 80,65 35,65" fill="#ff7675" stroke="#2c3e50" stroke-width="3" />
+                                <polygon points="85,25 85,65 120,65" fill="#74b9ff" stroke="#2c3e50" stroke-width="3" />
+                                <!-- Flag -->
+                                <polygon points="80,15 80,5 95,10" fill="#55efc4" stroke="#2c3e50" stroke-width="2" />
+                            </svg>
+                        </div>
+                        <h3>Bentuk Kapal Mainan</h3>
+                        <p>Tersusun atas beberapa bentuk segitiga (layar) dan trapesium (lambung kapal).</p>
+                    </div>
+
+                    <!-- House -->
+                    <div class="apersepsi-card-p2">
+                        <div class="apersepsi-svg-box-p2">
+                            <!-- Geometric House -->
+                            <svg viewBox="0 0 160 120" class="showcase-svg">
+                                <!-- Roof -->
+                                <polygon points="80,15 130,55 30,55" fill="#ff7675" stroke="#2c3e50" stroke-width="3" />
+                                <!-- Body -->
+                                <rect x="40" y="55" width="80" height="50" fill="#a29bfe" stroke="#2c3e50"
+                                    stroke-width="3" />
+                                <!-- Door -->
+                                <rect x="55" y="75" width="20" height="30" fill="#ffeaa7" stroke="#2c3e50"
+                                    stroke-width="2" />
+                                <!-- Window -->
+                                <rect x="85" y="65" width="20" height="20" fill="#81ecec" stroke="#2c3e50"
+                                    stroke-width="2" />
+                                <line x1="95" y1="65" x2="95" y2="85" stroke="#2c3e50" stroke-width="1" />
+                                <line x1="85" y1="75" x2="105" y2="75" stroke="#2c3e50" stroke-width="1" />
+                            </svg>
+                        </div>
+                        <h3>Bentuk Rumah</h3>
+                        <p>Tersusun atas bentuk segitiga (atap) dan beberapa persegi/persegi panjang (dinding, pintu,
+                            jendela).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PERTEMUAN 2: AKTIVITAS SUSUN (KOMPOSISI) ================= -->
+        <section id="screen-p2-eksplorasi-susun" class="screen">
+            <div class="workspace-layout">
+                <!-- Left panel: Drag-and-drop workspace -->
+                <div class="manipulative-area">
+                    <div class="area-header">
+                        <span class="badge green">Komposisi</span>
+                        <h2>Susun Bangun Datar Menjadi Bentuk Utuh</h2>
+                    </div>
+
+                    <div class="canvas-board relative" id="composition-board-area">
+                        <div class="instruction-bubble">
+                            <i class="fas fa-arrows-alt"></i> Tarik (drag) kepingan bangun datar di sebelah kanan ke
+                            dalam cetakan bayangan putih yang cocok!
+                        </div>
+
+                        <!-- Snapping Workspace Containers -->
+                        <div class="puzzle-workspace">
+                            <!-- SVG target template container -->
+                            <div class="svg-container-p2">
+                                <svg viewBox="0 0 450 280" id="composition-svg" class="puzzle-canvas">
+                                    <rect width="100%" height="100%" fill="url(#grid)" />
+                                    <!-- Target silhouettes (dashed lines, grey fill) -->
+                                    <g id="puzzle-targets">
+                                        <!-- House template (default) -->
+                                        <g class="template-house">
+                                            <!-- Roof target -->
+                                            <polygon points="225,25 345,115 105,115" class="target-slot"
+                                                data-slot="roof" fill="#eaeaea" stroke="#aaa" stroke-width="3"
+                                                stroke-dasharray="6,4" />
+                                            <!-- Body target -->
+                                            <rect x="135" y="115" width="180" height="135" class="target-slot"
+                                                data-slot="body" fill="#eaeaea" stroke="#aaa" stroke-width="3"
+                                                stroke-dasharray="6,4" />
+                                            <!-- Door target -->
+                                            <rect x="200" y="170" width="50" height="80" class="target-slot"
+                                                data-slot="door" fill="#cacaca" stroke="#888" stroke-width="3"
+                                                stroke-dasharray="6,4" />
+                                        </g>
+
+                                        <!-- Ship template (initially hidden) -->
+                                        <g class="template-ship hide">
+                                            <!-- Hull -->
+                                            <polygon points="65,180 385,180 335,245 115,245" class="target-slot"
+                                                data-slot="hull" fill="#eaeaea" stroke="#aaa" stroke-width="3"
+                                                stroke-dasharray="6,4" />
+                                            <!-- Large Sail -->
+                                            <polygon points="215,35 215,165 115,165" class="target-slot"
+                                                data-slot="sail-big" fill="#eaeaea" stroke="#aaa" stroke-width="3"
+                                                stroke-dasharray="6,4" />
+                                            <!-- Small Sail -->
+                                            <polygon points="225,60 225,165 315,165" class="target-slot"
+                                                data-slot="sail-small" fill="#eaeaea" stroke="#aaa" stroke-width="3"
+                                                stroke-dasharray="6,4" />
+                                        </g>
+                                    </g>
+                                </svg>
+                            </div>
+
+                            <!-- Draggable elements container (overlay absolute) -->
+                            <div id="draggable-container" class="draggable-container">
+                                <!-- Draggable pieces will be dynamically spawned here -->
+                            </div>
+                        </div>
+
+                        <!-- Success message overlays -->
+                        <div id="composition-success" class="puzzle-success-banner hide">
+                            <h3><i class="fas fa-star-and-crescent text-yellow"></i> Keren! Susunan Selesai! <i
+                                    class="fas fa-star-and-crescent text-yellow"></i></h3>
+                            <p>Kamu berhasil menyusun bentuk dengan sangat baik!</p>
+                            <button class="btn-green-small" onclick="app.toggleCompositionTemplate()">Coba Bentuk
+                                Lain</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Sidebar: Controls and Shape Bin info -->
+                <div class="sidebar-card">
+                    <div class="card-header yellow-tab">
+                        <h3>Kotak Komposisi</h3>
+                    </div>
+                    <div class="card-body flex-col justify-between">
+                        <div class="control-box-p2">
+                            <h4>Pilih Cetakan Gambar:</h4>
+                            <div class="template-selector">
+                                <button id="btn-select-house" class="tab-select active"
+                                    onclick="app.selectCompositionTemplate('house')">
+                                    <i class="fas fa-home"></i> Rumah
+                                </button>
+                                <button id="btn-select-ship" class="tab-select"
+                                    onclick="app.selectCompositionTemplate('ship')">
+                                    <i class="fas fa-ship"></i> Kapal
+                                </button>
+                            </div>
+
+                            <hr class="divider">
+
+                            <h4>Kepingan Bangun Datar:</h4>
+                            <div class="pieces-info-list">
+                                <div class="piece-info-row">
+                                    <span class="shape-indicator bg-red triangle-indicator"></span> Segitiga (Atap /
+                                    Layar)
+                                </div>
+                                <div class="piece-info-row">
+                                    <span class="shape-indicator bg-purple square-indicator"></span> Persegi (Dinding
+                                    Rumah)
+                                </div>
+                                <div class="piece-info-row">
+                                    <span class="shape-indicator bg-orange rect-indicator"></span> Persegi Panjang
+                                    (Pintu)
+                                </div>
+                                <div class="piece-info-row">
+                                    <span class="shape-indicator bg-yellow trapezoid-indicator"></span> Trapesium
+                                    (Lambung Kapal)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="reset-box">
+                            <button class="btn-blue-outline w-100" onclick="app.resetComposition()">
+                                <i class="fas fa-redo"></i> Ulangi Susunan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PERTEMUAN 2: AKTIVITAS URAI (DEKOMPOSISI) ================= -->
+        <section id="screen-p2-eksplorasi-urai" class="screen">
+            <div class="workspace-layout">
+                <!-- Left panel: Decomposition game board -->
+                <div class="manipulative-area">
+                    <div class="area-header">
+                        <span class="badge purple">Dekomposisi</span>
+                        <h2>Urai Bentuk Gabungan Menjadi Bagian Sederhana</h2>
+                    </div>
+
+                    <div class="canvas-board" id="decomposition-board-area">
+                        <div class="instruction-bubble">
+                            <i class="fas fa-hand-scissors"></i> Tarik kepingan bangun datar dari gambar rumah di kiri,
+                            lalu masukkan ke dalam <strong>keranjang pengelompokan yang tepat</strong> di kanan!
+                        </div>
+
+                        <div class="decomposition-workspace">
+                            <!-- Left: The assembled compound object ready to be broken apart -->
+                            <div class="compound-object-source" id="decomp-source-container">
+                                <!-- Draggable parts of the house -->
+                                <div id="decomp-roof" class="decomp-piece shape-triangle-roof" data-shape="segitiga"
+                                    style="top: 20px; left: 60px;">
+                                    <svg viewBox="0 0 160 100" width="160" height="100">
+                                        <polygon points="80,5 155,95 5,95" fill="#ff7675" stroke="#2c3e50"
+                                            stroke-width="4" />
+                                        <text x="80" y="65" font-family="Fredoka" font-size="16" font-weight="bold"
+                                            fill="#fff" text-anchor="middle">ATAP</text>
+                                    </svg>
+                                </div>
+
+                                <div id="decomp-body" class="decomp-piece shape-square-body" data-shape="segiempat"
+                                    style="top: 116px; left: 80px;">
+                                    <svg viewBox="0 0 120 120" width="120" height="120">
+                                        <rect x="5" y="5" width="110" height="110" fill="#a29bfe" stroke="#2c3e50"
+                                            stroke-width="4" />
+                                        <text x="60" y="65" font-family="Fredoka" font-size="16" font-weight="bold"
+                                            fill="#fff" text-anchor="middle">DINDING</text>
+                                    </svg>
+                                </div>
+
+                                <div id="decomp-door" class="decomp-piece shape-rect-door" data-shape="segiempat"
+                                    style="top: 161px; left: 125px;">
+                                    <svg viewBox="0 0 30 75" width="30" height="75">
+                                        <rect x="3" y="3" width="24" height="69" fill="#ffeaa7" stroke="#2c3e50"
+                                            stroke-width="3" />
+                                        <text x="15" y="42" font-family="Fredoka" font-size="11" font-weight="bold"
+                                            fill="#2c3e50" text-anchor="middle"
+                                            transform="rotate(-90 15,42)">PINTU</text>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- Right: Category Baskets -->
+                            <div class="baskets-container">
+                                <!-- Basket Segitiga -->
+                                <div class="basket-card" data-basket="segitiga" id="basket-segitiga">
+                                    <div class="basket-header bg-red">
+                                        <i class="fas fa-shapes"></i> Keranjang Segitiga
+                                    </div>
+                                    <div class="basket-contents" id="contents-segitiga">
+                                        <!-- Items dropped here will list -->
+                                        <span class="basket-placeholder">Seret Segitiga Ke Sini</span>
+                                    </div>
+                                </div>
+
+                                <!-- Basket Segiempat -->
+                                <div class="basket-card" data-basket="segiempat" id="basket-segiempat">
+                                    <div class="basket-header bg-blue">
+                                        <i class="fas fa-cube"></i> Keranjang Segiempat
+                                    </div>
+                                    <div class="basket-contents" id="contents-segiempat">
+                                        <!-- Items dropped here will list -->
+                                        <span class="basket-placeholder">Seret Segiempat Ke Sini</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Success message overlay for decomposition -->
+                        <div id="decomposition-success" class="puzzle-success-banner hide">
+                            <h3><i class="fas fa-thumbs-up text-yellow"></i> Luar Biasa! Penguraian Berhasil! <i
+                                    class="fas fa-thumbs-up text-yellow"></i></h3>
+                            <p>Kamu telah berhasil mengurai rumah menjadi bentuk dasar: Segitiga & Segiempat!</p>
+                            <button class="btn-green-small" onclick="app.resetDecomposition()">Main Lagi</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Sidebar: Observation -->
+                <div class="sidebar-card">
+                    <div class="card-header yellow-tab">
+                        <h3>Catatan Hasil Urai</h3>
+                    </div>
+                    <div class="card-body scrollable">
+                        <div class="decomp-scorecard">
+                            <h4>Status Pengelompokan:</h4>
+                            <ul class="decomp-status-list">
+                                <li>
+                                    Atap Rumah &rarr;
+                                    <span id="status-roof" class="badge-status pending">Belum Diseret</span>
+                                </li>
+                                <li>
+                                    Dinding Rumah &rarr;
+                                    <span id="status-body" class="badge-status pending">Belum Diseret</span>
+                                </li>
+                                <li>
+                                    Pintu Rumah &rarr;
+                                    <span id="status-door" class="badge-status pending">Belum Diseret</span>
+                                </li>
+                            </ul>
+
+                            <hr class="divider">
+
+                            <div class="info-bubble-green">
+                                <strong>Penjelasan RME:</strong><br>
+                                Menghubungkan bentuk rumah nyata (Apersepsi) dengan bagian-bagian geometrisnya melatih
+                                pemikiran visual dekomposisi spasial siswa!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PERTEMUAN 2: SELESAI ================= -->
+        <section id="screen-p2-selesai" class="screen">
+            <div class="conclusion-layout">
+                <div class="trophy-box">
+                    <i class="fas fa-crown crown-icon text-yellow"></i>
+                </div>
+                <h2>Hebat! Pertemuan 2 Selesai!</h2>
+                <div class="intro-content-box text-center">
+                    <p>
+                        Kamu luar biasa! Kamu telah berhasil merakit berbagai bentuk kompleks (Komposisi) dan membongkar
+                        kembali bagian-bagiannya (Dekomposisi). Kemampuan spasial kamu sangat tajam!
+                    </p>
+                </div>
+                <button class="btn-green-large" onclick="app.goToMenu()">Kembali ke Menu Utama</button>
+            </div>
+        </section>
+
+        <!-- ================= GLOBAL NAVIGATION FOOTER ================= -->
+        <footer id="global-nav-footer" class="nav-footer hide">
+            <button id="btn-footer-back" class="nav-btn btn-blue" onclick="app.prevScreen()">
+                <i class="fas fa-arrow-left"></i> KEMBALI
+            </button>
+            <button id="btn-footer-home" class="nav-btn btn-orange" onclick="app.goToMenu()">
+                <i class="fas fa-home"></i> HOME / MENU
+            </button>
+            <button id="btn-footer-next" class="nav-btn btn-green" onclick="app.nextScreen()">
+                SELANJUTNYA <i class="fas fa-arrow-right"></i>
+            </button>
+        </footer>
+
+    </div>
+
+    <!-- Script references -->
+    <script src="js/app.js"></script>
+</body>
+
+</html>
