@@ -2331,7 +2331,7 @@ body {
     padding: 0 10px;
     justify-content: center;
     align-content: start;
-    align-self: start; /* Prevents vertical stretching so height remains auto */
+    align-self: flex-start; /* Prevents vertical stretching so height remains auto */
     margin-top: 25px; /* Positioned higher up in the middle of the sky */
     height: auto;
 }
@@ -2446,7 +2446,7 @@ body {
     .apersepsi-cards-grid {
         grid-template-columns: repeat(3, 1fr);
         grid-gap: 6px;
-        align-self: start; /* Prevents stretching on smaller screens */
+        align-self: flex-start; /* Prevents stretching on smaller screens */
         margin-top: 10px; /* Optimized height for mobile/tablet */
     }
     .apersepsi-cards-grid .apersepsi-card {
