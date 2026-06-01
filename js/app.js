@@ -123,7 +123,7 @@ class MathApp {
         };
 
         // Pertemuan 2 State
-        this.compositionTemplate = 'house'; // 'house' or 'ship'
+        this.compositionTemplate = 'house'; // 'house', 'ship', or 'engklek'
         this.draggedSVGElement = null;
         this.svgOffset = { x: 0, y: 0 };
         this.compositionScore = 0;
@@ -137,20 +137,38 @@ class MathApp {
                 hull: { targetCenter: { x: 225, y: 212.5 }, color: '#ffeaa7', snapDist: 25, snapped: false },
                 'sail-big': { targetCenter: { x: 165, y: 100 }, color: '#ff7675', snapDist: 25, snapped: false },
                 'sail-small': { targetCenter: { x: 270, y: 112.5 }, color: '#74b9ff', snapDist: 25, snapped: false }
+            },
+            engklek: {
+                'track-lower': { targetCenter: { x: 225, y: 220 }, color: '#ffeaa7', snapDist: 25, snapped: false },
+                'track-mid': { targetCenter: { x: 225, y: 160 }, color: '#74b9ff', snapDist: 25, snapped: false },
+                wings: { targetCenter: { x: 225, y: 120 }, color: '#81ecec', snapDist: 25, snapped: false },
+                'track-upper': { targetCenter: { x: 225, y: 80 }, color: '#ff7675', snapDist: 25, snapped: false },
+                gunung: { targetCenter: { x: 225, y: 50 }, color: '#55efc4', snapDist: 20, snapped: false }
             }
         };
-        this.compositionStartingPositions = [
-            { x: 390, y: 60 },
-            { x: 390, y: 145 },
-            { x: 390, y: 220 }
-        ];
+        this.compositionStartingPositions = {
+            house: [
+                { x: 390, y: 60 },
+                { x: 390, y: 145 },
+                { x: 390, y: 220 }
+            ],
+            ship: [
+                { x: 390, y: 60 },
+                { x: 390, y: 145 },
+                { x: 390, y: 220 }
+            ],
+            engklek: [
+                { x: 390, y: 40 },
+                { x: 390, y: 95 },
+                { x: 390, y: 150 },
+                { x: 390, y: 205 },
+                { x: 390, y: 260 }
+            ]
+        };
 
         // Decomposition State
+        this.decompositionTemplate = 'house'; // 'house' or 'engklek'
         this.decompActivePieces = 3;
-        this.decompBaskets = {
-            segitiga: ['decomp-roof'],
-            segiempat: ['decomp-body', 'decomp-door']
-        };
         this.decompLog = {
             'decomp-roof': false,
             'decomp-body': false,
@@ -624,6 +642,27 @@ class MathApp {
         }
     }
 
+    goToCompositionFromApersepsi(templateName) {
+        this.playSound('click');
+        this.selectMeeting(2);
+        this.currentScreenIndex = 6; // screen-p2-eksplorasi-susun
+        this.compositionTemplate = templateName;
+        this.showScreen('screen-p2-eksplorasi-susun');
+
+        // Update active class on template tabs
+        const btnHouse = document.getElementById('btn-select-house');
+        const btnShip = document.getElementById('btn-select-ship');
+        const btnEngklek = document.getElementById('btn-select-engklek');
+        if (btnHouse) btnHouse.classList.remove('active');
+        if (btnShip) btnShip.classList.remove('active');
+        if (btnEngklek) btnEngklek.classList.remove('active');
+
+        const activeBtn = document.getElementById(`btn-select-${templateName}`);
+        if (activeBtn) activeBtn.classList.add('active');
+
+        this.setupCompositionPuzzle();
+    }
+
 
     // ================= PERTEMUAN 1: TRIANGLE INTERACTIVE EXPLORATION =================
     setTrianglePreset(presetName) {
@@ -1071,7 +1110,12 @@ class MathApp {
             door: "Pintu Rumah: Persegi Panjang (Sudut: 90&deg;, 90&deg;, 90&deg;, 90&deg; | Sisi: 8 cm, 8 cm, 5 cm, 5 cm)",
             hull: "Lambung Kapal: Trapesium Sama Kaki (Sudut: 110&deg;, 70&deg;, 70&deg;, 110&deg; | Sisi: 12 cm, 6 cm, 5 cm, 6 cm)",
             'sail-big': "Layar Besar: Segitiga Siku-Siku (Sudut: 90&deg;, 53&deg;, 37&deg; | Sisi: 6 cm, 10 cm, 8 cm)",
-            'sail-small': "Layar Kecil: Segitiga Siku-Siku (Sudut: 90&deg;, 45&deg;, 45&deg; | Sisi: 5 cm, 7 cm, 5 cm)"
+            'sail-small': "Layar Kecil: Segitiga Siku-Siku (Sudut: 90&deg;, 45&deg;, 45&deg; | Sisi: 5 cm, 7 cm, 5 cm)",
+            'track-lower': "Kotak Bawah (1 & 2): Persegi Panjang (Sudut: 90&deg;, 90&deg;, 90&deg;, 90&deg; | Sisi: 8 cm, 4 cm, 8 cm, 4 cm)",
+            'track-mid': "Kotak Tengah (3): Persegi (Sudut: 90&deg;, 90&deg;, 90&deg;, 90&deg; | Sisi: 4 cm, 4 cm, 4 cm, 4 cm)",
+            wings: "Sayap (4, 5, & 6): Persegi Panjang (Sudut: 90&deg;, 90&deg;, 90&deg;, 90&deg; | Sisi: 12 cm, 4 cm, 12 cm, 4 cm)",
+            'track-upper': "Kotak Atas (7): Persegi (Sudut: 90&deg;, 90&deg;, 90&deg;, 90&deg; | Sisi: 4 cm, 4 cm, 4 cm, 4 cm)",
+            gunung: "Gunung Engklak: Setengah Lingkaran (Memiliki 1 sisi melengkung, 1 sisi lurus mendatar)"
         };
 
         const popup = document.getElementById('composition-info-popup');
@@ -1093,7 +1137,10 @@ class MathApp {
         const descriptions = {
             'decomp-roof': "Atap: Segitiga Sama Kaki (Sudut: 40&deg;, 70&deg;, 70&deg; | Sisi: 9 cm, 9 cm, 6 cm)",
             'decomp-body': "Dinding: Persegi (Sudut: 90&deg;, 90&deg;, 90&deg;, 90&deg; | Sisi: 7 cm, 7 cm, 7 cm, 7 cm)",
-            'decomp-door': "Pintu: Persegi Panjang (Sudut: 90&deg;, 90&deg;, 90&deg;, 90&deg; | Sisi: 8 cm, 8 cm, 5 cm, 5 cm)"
+            'decomp-door': "Pintu: Persegi Panjang (Sudut: 90&deg;, 90&deg;, 90&deg;, 90&deg; | Sisi: 8 cm, 8 cm, 5 cm, 5 cm)",
+            'decomp-gunung': "Gunung: Setengah Lingkaran / Kubah (Memiliki 1 sisi melengkung, 1 sisi lurus, tanpa sudut lancip)",
+            'decomp-wings': "Sayap Lintasan: Persegi Panjang (Sudut: 90&deg;, 90&deg;, 90&deg;, 90&deg; | Sisi: 12 cm, 4 cm, 12 cm, 4 cm)",
+            'decomp-track': "Kotak Lintasan: Persegi Panjang (Sudut: 90&deg;, 90&deg;, 90&deg;, 90&deg; | Sisi: 10 cm, 6 cm, 10 cm, 6 cm)"
         };
 
         const popup = document.getElementById('decomposition-info-popup');
@@ -1198,13 +1245,18 @@ class MathApp {
         // Display correct template slots in SVG
         const houseGroup = document.querySelector('#composition-svg .template-house');
         const shipGroup = document.querySelector('#composition-svg .template-ship');
+        const engklekGroup = document.querySelector('#composition-svg .template-engklek');
+
+        if (houseGroup) houseGroup.classList.add('hide');
+        if (shipGroup) shipGroup.classList.add('hide');
+        if (engklekGroup) engklekGroup.classList.add('hide');
 
         if (this.compositionTemplate === 'house') {
-            houseGroup.classList.remove('hide');
-            shipGroup.classList.add('hide');
-        } else {
-            houseGroup.classList.add('hide');
-            shipGroup.classList.remove('hide');
+            if (houseGroup) houseGroup.classList.remove('hide');
+        } else if (this.compositionTemplate === 'ship') {
+            if (shipGroup) shipGroup.classList.remove('hide');
+        } else if (this.compositionTemplate === 'engklek') {
+            if (engklekGroup) engklekGroup.classList.remove('hide');
         }
 
         // Spawn draggable pieces inside SVG overlay
@@ -1226,7 +1278,7 @@ class MathApp {
                 <line x1="25" y1="5" x2="25" y2="75" stroke="#d35400" stroke-width="1.5" />
                 <circle cx="33" cy="40" r="3" fill="#d35400" />`, w: 50, h: 80 }
             ];
-        } else {
+        } else if (this.compositionTemplate === 'ship') {
             pieces = [
                 { id: 'hull', type: 'trapezoid', html: `<polygon points="5,5 315,5 265,60 55,60" fill="#ffeaa7" stroke="#2d3436" stroke-width="3.5" style="pointer-events: auto;"/>
                 <line x1="30" y1="23" x2="290" y2="23" stroke="#d35400" stroke-width="2" />
@@ -1235,6 +1287,25 @@ class MathApp {
                 <line x1="95" y1="5" x2="50" y2="125" stroke="#c0392b" stroke-width="1.5" />`, w: 100, h: 130 },
                 { id: 'sail-small', type: 'triangle', html: `<polygon points="5,5 5,100 85,100" fill="#74b9ff" stroke="#2d3436" stroke-width="3.5" style="pointer-events: auto;"/>
                 <line x1="5" y1="5" x2="45" y2="100" stroke="#0984e3" stroke-width="1.5" />`, w: 90, h: 105 }
+            ];
+        } else if (this.compositionTemplate === 'engklek') {
+            pieces = [
+                { id: 'track-lower', type: 'rectangle', html: `<rect x="3" y="3" width="34" height="74" fill="#ffeaa7" stroke="#2d3436" stroke-width="3" style="pointer-events: auto;"/>
+                <line x1="3" y1="38" x2="37" y2="38" stroke="#d35400" stroke-width="2" />
+                <text x="20" y="24" font-family="Fredoka" font-size="12" font-weight="bold" fill="#2c3e50" text-anchor="middle">1</text>
+                <text x="20" y="62" font-family="Fredoka" font-size="12" font-weight="bold" fill="#2c3e50" text-anchor="middle">2</text>`, w: 40, h: 80 },
+                { id: 'track-mid', type: 'square', html: `<rect x="3" y="3" width="34" height="34" fill="#74b9ff" stroke="#2d3436" stroke-width="3" style="pointer-events: auto;"/>
+                <text x="20" y="24" font-family="Fredoka" font-size="12" font-weight="bold" fill="#fff" text-anchor="middle">3</text>`, w: 40, h: 40 },
+                { id: 'wings', type: 'rectangle', html: `<rect x="3" y="3" width="114" height="34" fill="#81ecec" stroke="#2d3436" stroke-width="3" style="pointer-events: auto;"/>
+                <line x1="41" y1="3" x2="41" y2="37" stroke="#00aea9" stroke-width="2" />
+                <line x1="79" y1="3" x2="79" y2="37" stroke="#00aea9" stroke-width="2" />
+                <text x="22" y="24" font-family="Fredoka" font-size="12" font-weight="bold" fill="#2c3e50" text-anchor="middle">4</text>
+                <text x="60" y="24" font-family="Fredoka" font-size="12" font-weight="bold" fill="#2c3e50" text-anchor="middle">5</text>
+                <text x="98" y="24" font-family="Fredoka" font-size="12" font-weight="bold" fill="#2c3e50" text-anchor="middle">6</text>`, w: 120, h: 40 },
+                { id: 'track-upper', type: 'square', html: `<rect x="3" y="3" width="34" height="34" fill="#ff7675" stroke="#2d3436" stroke-width="3" style="pointer-events: auto;"/>
+                <text x="20" y="24" font-family="Fredoka" font-size="12" font-weight="bold" fill="#fff" text-anchor="middle">7</text>`, w: 40, h: 40 },
+                { id: 'gunung', type: 'halfcircle', html: `<path d="M 3,20 A 17,17 0 0,1 37,20 Z" fill="#55efc4" stroke="#2d3436" stroke-width="3" style="pointer-events: auto;"/>
+                <text x="20" y="18" font-family="Fredoka" font-size="8" font-weight="bold" fill="#2c3e50" text-anchor="middle">GNG</text>`, w: 40, h: 20 }
             ];
         }
 
@@ -1263,7 +1334,7 @@ class MathApp {
             dragContainer.appendChild(pieceDiv);
 
             // Position relative to #draggable-container using SVG coordinates
-            const pos = this.compositionStartingPositions[idx];
+            const pos = this.compositionStartingPositions[this.compositionTemplate][idx];
             const pt = svg.createSVGPoint();
             pt.x = pos.x;
             pt.y = pos.y;
@@ -1279,6 +1350,8 @@ class MathApp {
             // Bind drag handlers
             this.bindSVGDragHandlers(pieceDiv, p.id);
         });
+
+        this.updateCompositionSpeech();
     }
 
     bindSVGDragHandlers(el, targetId) {
@@ -1409,6 +1482,7 @@ class MathApp {
                 el.querySelector('svg > *').setAttribute('stroke-width', '4');
 
                 this.compositionScore++;
+                this.updateCompositionSpeech();
                 this.checkCompositionVictory();
             } else {
                 // Slide back to original dock
@@ -1436,15 +1510,21 @@ class MathApp {
         this.compositionTemplate = name;
         
         // Update selection tabs styling
-        document.getElementById('btn-select-house').classList.remove('active');
-        document.getElementById('btn-select-ship').classList.remove('active');
-        document.getElementById(`btn-select-${name}`).classList.add('active');
+        const btnHouse = document.getElementById('btn-select-house');
+        const btnShip = document.getElementById('btn-select-ship');
+        const btnEngklek = document.getElementById('btn-select-engklek');
+        if (btnHouse) btnHouse.classList.remove('active');
+        if (btnShip) btnShip.classList.remove('active');
+        if (btnEngklek) btnEngklek.classList.remove('active');
+        
+        const activeBtn = document.getElementById(`btn-select-${name}`);
+        if (activeBtn) activeBtn.classList.add('active');
 
         this.setupCompositionPuzzle();
     }
 
     toggleCompositionTemplate() {
-        const next = this.compositionTemplate === 'house' ? 'ship' : 'house';
+        const next = this.compositionTemplate === 'house' ? 'ship' : (this.compositionTemplate === 'ship' ? 'engklek' : 'house');
         this.selectCompositionTemplate(next);
     }
 
@@ -1457,7 +1537,20 @@ class MathApp {
         if (this.compositionScore >= totalPieces) {
             setTimeout(() => {
                 this.playSound('success');
-                document.getElementById('composition-success').classList.remove('hide');
+                const successBanner = document.getElementById('composition-success');
+                if (successBanner) {
+                    let descText = "Kamu berhasil menyusun bentuk dengan sangat baik!";
+                    if (this.compositionTemplate === 'house') {
+                        descText = "Kamu hebat! Rumah ini sekarang utuh dari gabungan segitiga, persegi, dan persegi panjang.";
+                    } else if (this.compositionTemplate === 'ship') {
+                        descText = "Luar biasa! Kapal ini berlayar dengan gagah berkat layar segitiga dan lambung trapesium.";
+                    } else if (this.compositionTemplate === 'engklek') {
+                        descText = "Keren! Pola lantai engklak selesai disusun dari persegi, persegi panjang, dan gunung setengah lingkaran.";
+                    }
+                    const descP = successBanner.querySelector('p');
+                    if (descP) descP.textContent = descText;
+                    successBanner.classList.remove('hide');
+                }
             }, 300);
         }
     }
@@ -1536,6 +1629,10 @@ class MathApp {
             // Check if dropped inside target baskets
             const rectSegitiga = document.getElementById('basket-segitiga').getBoundingClientRect();
             const rectSegiempat = document.getElementById('basket-segiempat').getBoundingClientRect();
+            
+            const basketLengkungEl = document.getElementById('basket-lengkung');
+            const rectLengkung = basketLengkungEl ? basketLengkungEl.getBoundingClientRect() : null;
+
             const elRect = el.getBoundingClientRect();
 
             // Midpoint of dragged element
@@ -1549,6 +1646,9 @@ class MathApp {
             } else if (elMX >= rectSegiempat.left && elMX <= rectSegiempat.right &&
                        elMY >= rectSegiempat.top && elMY <= rectSegiempat.bottom) {
                 targetBasket = 'segiempat';
+            } else if (rectLengkung && elMX >= rectLengkung.left && elMX <= rectLengkung.right &&
+                       elMY >= rectLengkung.top && elMY <= rectLengkung.bottom) {
+                targetBasket = 'lengkung';
             }
 
             const correctBasketType = el.getAttribute('data-shape');
@@ -1565,21 +1665,33 @@ class MathApp {
                     const placeholder = basketContents.querySelector('.basket-placeholder');
                     if (placeholder) placeholder.remove();
 
-                    const pieceLabel = id === 'decomp-roof' ? 'Atap (Segitiga)' :
-                                       id === 'decomp-body' ? 'Dinding (Segiempat)' : 'Pintu (Segiempat)';
+                    let displayName = '';
+                    if (id === 'decomp-roof') displayName = 'Atap';
+                    else if (id === 'decomp-body') displayName = 'Dinding';
+                    else if (id === 'decomp-door') displayName = 'Pintu';
+                    else if (id === 'decomp-gunung') displayName = 'Gunung';
+                    else if (id === 'decomp-wings') displayName = 'Sayap';
+                    else if (id === 'decomp-track') displayName = 'Kotak';
                     
                     const labelBadge = document.createElement('span');
-                    labelBadge.className = 'badge ' + (targetBasket === 'segitiga' ? 'red' : 'blue');
-                    labelBadge.textContent = id === 'decomp-roof' ? 'Atap' : (id === 'decomp-body' ? 'Dinding' : 'Pintu');
+                    let colorClass = 'blue';
+                    if (targetBasket === 'segitiga') colorClass = 'red';
+                    else if (targetBasket === 'lengkung') colorClass = 'green';
+                    
+                    labelBadge.className = `badge ${colorClass}`;
+                    labelBadge.textContent = displayName;
                     basketContents.appendChild(labelBadge);
 
                     // Update log table status
-                    const shortId = id.split('-')[1]; // roof, body, door
+                    const shortId = id.split('-')[1]; // roof, body, door, gunung, wings, track
                     const statusBadge = document.getElementById(`status-${shortId}`);
-                    statusBadge.textContent = 'Benar!';
-                    statusBadge.className = 'badge-status sorted';
+                    if (statusBadge) {
+                        statusBadge.textContent = 'Benar!';
+                        statusBadge.className = 'badge-status sorted';
+                    }
 
                     this.decompActivePieces--;
+                    this.updateDecompositionSpeech();
                     this.checkDecompositionVictory();
                 } else {
                     // Wrong basket! Bounce back
@@ -1610,71 +1722,281 @@ class MathApp {
         }, 200);
     }
 
-    setupDecompositionDragAndDrop() {
-        const roof = document.getElementById('decomp-roof');
-        const body = document.getElementById('decomp-body');
-        const door = document.getElementById('decomp-door');
+    selectDecompositionTemplate(name) {
+        this.decompositionTemplate = name;
         
-        if (roof && body && door) {
-            this.bindDecompPieceHandlers(roof, 'decomp-roof');
-            this.bindDecompPieceHandlers(body, 'decomp-body');
-            this.bindDecompPieceHandlers(door, 'decomp-door');
-        }
+        // Update selection tabs styling in decomposition sidebar
+        const btnHouse = document.getElementById('btn-decomp-select-house');
+        const btnEngklek = document.getElementById('btn-decomp-select-engklek');
+        if (btnHouse) btnHouse.classList.remove('active');
+        if (btnEngklek) btnEngklek.classList.remove('active');
+        
+        const activeBtn = document.getElementById(`btn-decomp-select-${name}`);
+        if (activeBtn) activeBtn.classList.add('active');
+
+        this.resetDecomposition();
     }
 
     resetDecomposition() {
-        // Reset state
-        this.decompActivePieces = 3;
-        this.decompLog = {
-            'decomp-roof': false,
-            'decomp-body': false,
-            'decomp-door': false
-        };
+        const sourceContainer = document.getElementById('decomp-source-container');
+        if (!sourceContainer) return;
 
-        // Reset pieces styles and positions
-        const roof = document.getElementById('decomp-roof');
-        const body = document.getElementById('decomp-body');
-        const door = document.getElementById('decomp-door');
-
-        if (roof) {
-            roof.className = 'decomp-piece shape-triangle-roof';
-            roof.style.left = '60px';
-            roof.style.top = '20px';
-        }
-        if (body) {
-            body.className = 'decomp-piece shape-square-body';
-            body.style.left = '80px';
-            body.style.top = '116px';
-        }
-        if (door) {
-            door.className = 'decomp-piece shape-rect-door';
-            door.style.left = '125px';
-            door.style.top = '161px';
-        }
+        // Hide success banner
+        document.getElementById('decomposition-success').classList.add('hide');
 
         // Reset basket UIs
         document.getElementById('contents-segitiga').innerHTML = '<span class="basket-placeholder">Seret Segitiga Ke Sini</span>';
         document.getElementById('contents-segiempat').innerHTML = '<span class="basket-placeholder">Seret Segiempat Ke Sini</span>';
+        
+        const contentsLengkung = document.getElementById('contents-lengkung');
+        if (contentsLengkung) {
+            contentsLengkung.innerHTML = '<span class="basket-placeholder">Seret Kubah Ke Sini</span>';
+        }
 
-        // Reset sidebar log UIs
-        ['roof', 'body', 'door'].forEach(name => {
-            const el = document.getElementById(`status-${name}`);
-            if (el) {
-                el.textContent = 'Belum Diseret';
-                el.className = 'badge-status pending';
-            }
+        // Show/hide baskets
+        const basketLengkung = document.getElementById('basket-lengkung');
+        if (this.decompositionTemplate === 'engklek') {
+            if (basketLengkung) basketLengkung.classList.remove('hide');
+        } else {
+            if (basketLengkung) basketLengkung.classList.add('hide');
+        }
+
+        // Clear container first
+        sourceContainer.innerHTML = '';
+
+        let pieces = [];
+        let statusHTML = '';
+
+        if (this.decompositionTemplate === 'house') {
+            this.decompActivePieces = 3;
+            this.decompLog = {
+                'decomp-roof': false,
+                'decomp-body': false,
+                'decomp-door': false
+            };
+
+            pieces = [
+                {
+                    id: 'decomp-roof',
+                    shape: 'segitiga',
+                    style: 'top: 20px; left: 60px;',
+                    html: `<svg viewBox="0 0 160 100" width="160" height="100">
+                        <polygon points="80,5 155,95 5,95" fill="#ff7675" stroke="#2c3e50" stroke-width="4" />
+                        <text x="80" y="65" font-family="Fredoka" font-size="16" font-weight="bold" fill="#fff" text-anchor="middle">ATAP</text>
+                    </svg>`,
+                    label: 'Atap'
+                },
+                {
+                    id: 'decomp-body',
+                    shape: 'segiempat',
+                    style: 'top: 116px; left: 80px;',
+                    html: `<svg viewBox="0 0 120 120" width="120" height="120">
+                        <rect x="5" y="5" width="110" height="110" fill="#a29bfe" stroke="#2c3e50" stroke-width="4" />
+                        <text x="60" y="65" font-family="Fredoka" font-size="16" font-weight="bold" fill="#fff" text-anchor="middle">DINDING</text>
+                    </svg>`,
+                    label: 'Dinding'
+                },
+                {
+                    id: 'decomp-door',
+                    shape: 'segiempat',
+                    style: 'top: 161px; left: 125px;',
+                    html: `<svg viewBox="0 0 30 75" width="30" height="75">
+                        <rect x="3" y="3" width="24" height="69" fill="#ffeaa7" stroke="#2c3e50" stroke-width="3" />
+                        <text x="15" y="42" font-family="Fredoka" font-size="11" font-weight="bold" fill="#2c3e50" text-anchor="middle" transform="rotate(-90 15,42)">PINTU</text>
+                    </svg>`,
+                    label: 'Pintu'
+                }
+            ];
+
+            statusHTML = `
+                <li>
+                    Atap Rumah &rarr;
+                    <span id="status-roof" class="badge-status pending">Belum Diseret</span>
+                </li>
+                <li>
+                    Dinding Rumah &rarr;
+                    <span id="status-body" class="badge-status pending">Belum Diseret</span>
+                </li>
+                <li>
+                    Pintu Rumah &rarr;
+                    <span id="status-door" class="badge-status pending">Belum Diseret</span>
+                </li>
+            `;
+        } else {
+            // engklek
+            this.decompActivePieces = 3;
+            this.decompLog = {
+                'decomp-gunung': false,
+                'decomp-wings': false,
+                'decomp-track': false
+            };
+
+            pieces = [
+                {
+                    id: 'decomp-gunung',
+                    shape: 'lengkung',
+                    style: 'top: 20px; left: 100px;',
+                    html: `<svg viewBox="0 0 80 45" width="80" height="45">
+                        <path d="M 5,40 A 35,35 0 0,1 75,40 Z" fill="#55efc4" stroke="#2c3e50" stroke-width="4"/>
+                        <text x="40" y="32" font-family="Fredoka" font-size="12" font-weight="bold" fill="#2c3e50" text-anchor="middle">GUNUNG</text>
+                    </svg>`,
+                    label: 'Gunung'
+                },
+                {
+                    id: 'decomp-wings',
+                    shape: 'segiempat',
+                    style: 'top: 75px; left: 80px;',
+                    html: `<svg viewBox="0 0 120 40" width="120" height="40">
+                        <rect x="5" y="5" width="110" height="30" fill="#81ecec" stroke="#2c3e50" stroke-width="4"/>
+                        <text x="60" y="24" font-family="Fredoka" font-size="12" font-weight="bold" fill="#2c3e50" text-anchor="middle">SAYAP</text>
+                    </svg>`,
+                    label: 'Sayap'
+                },
+                {
+                    id: 'decomp-track',
+                    shape: 'segiempat',
+                    style: 'top: 125px; left: 110px;',
+                    html: `<svg viewBox="0 0 60 100" width="60" height="100">
+                        <rect x="5" y="5" width="50" height="90" fill="#fab1a0" stroke="#2c3e50" stroke-width="4"/>
+                        <text x="30" y="55" font-family="Fredoka" font-size="12" font-weight="bold" fill="#2c3e50" text-anchor="middle">KOTAK</text>
+                    </svg>`,
+                    label: 'Kotak'
+                }
+            ];
+
+            statusHTML = `
+                <li>
+                    Gunung Engklak &rarr;
+                    <span id="status-gunung" class="badge-status pending">Belum Diseret</span>
+                </li>
+                <li>
+                    Sayap Lintasan &rarr;
+                    <span id="status-wings" class="badge-status pending">Belum Diseret</span>
+                </li>
+                <li>
+                    Kotak Lintasan &rarr;
+                    <span id="status-track" class="badge-status pending">Belum Diseret</span>
+                </li>
+            `;
+        }
+
+        // Render pieces
+        pieces.forEach(p => {
+            const pieceDiv = document.createElement('div');
+            pieceDiv.id = p.id;
+            pieceDiv.className = 'decomp-piece';
+            pieceDiv.setAttribute('data-shape', p.shape);
+            pieceDiv.style.cssText = p.style;
+            pieceDiv.innerHTML = p.html;
+            sourceContainer.appendChild(pieceDiv);
+
+            // Bind handlers
+            this.bindDecompPieceHandlers(pieceDiv, p.id);
         });
 
-        // Hide success banner
-        document.getElementById('decomposition-success').classList.add('hide');
+        // Render status list
+        const statusList = document.querySelector('.decomp-status-list');
+        if (statusList) {
+            statusList.innerHTML = statusHTML;
+        }
+
+        // Update instruction bubble text
+        const instructionBubble = document.querySelector('#screen-p2-eksplorasi-urai .instruction-bubble');
+        if (instructionBubble) {
+            if (this.decompositionTemplate === 'house') {
+                instructionBubble.innerHTML = '<i class="fas fa-hand-scissors"></i> Tarik kepingan bangun datar dari gambar rumah di kiri, lalu masukkan ke dalam <strong>keranjang pengelompokan yang tepat</strong> di kanan!';
+            } else {
+                instructionBubble.innerHTML = '<i class="fas fa-hand-scissors"></i> Tarik kepingan bangun datar dari gambar engklak di kiri, lalu masukkan ke dalam <strong>keranjang pengelompokan yang tepat</strong> di kanan!';
+            }
+        }
+
+        this.updateDecompositionSpeech();
     }
 
     checkDecompositionVictory() {
         if (this.decompActivePieces <= 0) {
             setTimeout(() => {
                 this.playSound('success');
-                document.getElementById('decomposition-success').classList.remove('hide');
+                const successBanner = document.getElementById('decomposition-success');
+                if (successBanner) {
+                    let descText = "Kamu telah berhasil mengurai rumah menjadi bentuk dasar: Segitiga & Segiempat!";
+                    if (this.decompositionTemplate === 'engklek') {
+                        descText = "Hebat! Kamu telah berhasil mengurai pola engklak menjadi bentuk dasar: Segiempat & Lengkung!";
+                    }
+                    const descP = successBanner.querySelector('p');
+                    if (descP) descP.textContent = descText;
+                    successBanner.classList.remove('hide');
+                }
             }, 300);
+        }
+    }
+
+    updateCompositionSpeech() {
+        const bubble = document.getElementById('composition-speech-bubble');
+        if (!bubble) return;
+
+        // Count snapped pieces
+        const config = this.compositionTargets[this.compositionTemplate];
+        let snappedCount = 0;
+        let total = 0;
+        for (let key in config) {
+            total++;
+            if (config[key].snapped) snappedCount++;
+        }
+
+        if (snappedCount === 0) {
+            if (this.compositionTemplate === 'house') {
+                bubble.innerHTML = "Mari kita buat sebuah rumah! Seret atap segitiga, dinding persegi, dan pintu persegi panjang ke bayangannya.";
+            } else if (this.compositionTemplate === 'ship') {
+                bubble.innerHTML = "Mari kita rakit kapal layar! Seret lambung kapal trapesium dan layar segitiga ke bayangannya.";
+            } else {
+                bubble.innerHTML = "Mari kita susun pola lantai engklak! Permainan ini menggunakan persegi untuk kotak, persegi panjang untuk sayap, dan setengah lingkaran untuk gunung.";
+            }
+        } else if (snappedCount === total) {
+            if (this.compositionTemplate === 'house') {
+                bubble.innerHTML = "Luar biasa! Rumah yang indah telah selesai kamu susun. Semua bagian terpasang dengan tepat!";
+            } else if (this.compositionTemplate === 'ship') {
+                bubble.innerHTML = "Hebat sekali! Kapal layar siap berpetualang mengarungi lautan lepas!";
+            } else {
+                bubble.innerHTML = "Sempurna! Lapangan engklak siap dimainkan. Lompatlah dari nomor 1 sampai gunung!";
+            }
+        } else {
+            // intermediate states
+            if (this.compositionTemplate === 'house') {
+                bubble.innerHTML = `Bagus! Sudah ${snappedCount} bagian terpasang. Teruskan menyusun bagian rumah lainnya ya!`;
+            } else if (this.compositionTemplate === 'ship') {
+                bubble.innerHTML = `Hebat! ${snappedCount} bagian kapal sudah menyatu. Ayo pasang sisanya!`;
+            } else {
+                bubble.innerHTML = `Keren! ${snappedCount} bagian engklak sudah terpasang. Ingat, gunung ada di posisi paling atas!`;
+            }
+        }
+    }
+
+    updateDecompositionSpeech() {
+        const bubble = document.getElementById('decomposition-speech-bubble');
+        if (!bubble) return;
+
+        const total = 3;
+        const placed = total - this.decompActivePieces;
+
+        if (placed === 0) {
+            if (this.decompositionTemplate === 'house') {
+                bubble.innerHTML = "Rumah ini terbentuk dari gabungan beberapa bangun datar. Bisakah kamu mengurainya ke keranjang yang sesuai?";
+            } else {
+                bubble.innerHTML = "Pola lantai engklak ini sangat menarik! Mari kita uraikan kepingan lintasannya ke keranjang segitiga, segiempat, atau lengkung.";
+            }
+        } else if (placed === total) {
+            if (this.decompositionTemplate === 'house') {
+                bubble.innerHTML = "Sangat pintar! Kamu berhasil mengurai semua bagian rumah ke keranjangnya masing-masing.";
+            } else {
+                bubble.innerHTML = "Hebat! Lapangan engklak berhasil diurai. Sekarang kamu paham perbedaan segiempat dan bentuk lengkung!";
+            }
+        } else {
+            if (this.decompositionTemplate === 'house') {
+                bubble.innerHTML = `Bagus! Kamu sudah mengelompokkan ${placed} bagian rumah. Selesaikan sisanya ya!`;
+            } else {
+                bubble.innerHTML = `Kerja bagus! ${placed} bagian engklak telah terkelompokkan dengan benar. Lanjutkan!`;
+            }
         }
     }
 
@@ -1715,10 +2037,15 @@ class MathApp {
                             el.style.top = `${targetTop}px`;
                         } else {
                             // Unsnapped / Docked pieces mapping
-                            const idx = this.compositionTemplate === 'house' ? 
-                                (key === 'roof' ? 0 : key === 'body' ? 1 : 2) :
-                                (key === 'hull' ? 0 : key === 'sail-big' ? 1 : 2);
-                            const pos = this.compositionStartingPositions[idx];
+                            let idx = 0;
+                            if (this.compositionTemplate === 'house') {
+                                idx = (key === 'roof' ? 0 : key === 'body' ? 1 : 2);
+                            } else if (this.compositionTemplate === 'ship') {
+                                idx = (key === 'hull' ? 0 : key === 'sail-big' ? 1 : 2);
+                            } else if (this.compositionTemplate === 'engklek') {
+                                idx = (key === 'track-lower' ? 0 : key === 'track-mid' ? 1 : key === 'wings' ? 2 : key === 'track-upper' ? 3 : 4);
+                            }
+                            const pos = this.compositionStartingPositions[this.compositionTemplate][idx];
                             
                             const pt = svg.createSVGPoint();
                             pt.x = pos.x;

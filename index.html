@@ -192,6 +192,17 @@
                                     <polygon points="50,15 50,45 25,45" fill="#55efc4" stroke="#2d3436"
                                         stroke-width="2" />
                                 </svg>
+                                <svg viewBox="0 0 100 80" class="mini-svg">
+                                    <!-- Mini engklak composition -->
+                                    <rect x="44" y="62" width="12" height="12" fill="#ffeaa7" stroke="#2d3436" stroke-width="1.5" />
+                                    <rect x="44" y="50" width="12" height="12" fill="#fab1a0" stroke="#2d3436" stroke-width="1.5" />
+                                    <rect x="44" y="38" width="12" height="12" fill="#74b9ff" stroke="#2d3436" stroke-width="1.5" />
+                                    <rect x="32" y="26" width="12" height="12" fill="#81ecec" stroke="#2d3436" stroke-width="1.5" />
+                                    <rect x="44" y="26" width="12" height="12" fill="#a29bfe" stroke="#2d3436" stroke-width="1.5" />
+                                    <rect x="56" y="26" width="12" height="12" fill="#81ecec" stroke="#2d3436" stroke-width="1.5" />
+                                    <rect x="44" y="14" width="12" height="12" fill="#ff7675" stroke="#2d3436" stroke-width="1.5" />
+                                    <path d="M 44,14 A 6,6 0 0,1 56,14 Z" fill="#55efc4" stroke="#2d3436" stroke-width="1.5" />
+                                </svg>
                             </div>
                             <span class="btn-menu-action">Mulai Bermain</span>
                         </div>
@@ -810,7 +821,7 @@
 
                 <div class="apersepsi-grid-p2">
                     <!-- Engklek -->
-                    <div class="apersepsi-card-p2">
+                    <div class="apersepsi-card-p2" onclick="app.goToCompositionFromApersepsi('engklek')">
                         <div class="apersepsi-svg-box-p2">
                             <!-- Engklek/Hopscotch Layout -->
                             <svg viewBox="0 0 120 180" class="showcase-svg">
@@ -844,12 +855,12 @@
                                 <text x="55" y="16" font-family="Fredoka" font-size="10" fill="#2c3e50">Gunung</text>
                             </svg>
                         </div>
-                        <h3>Pola Lantai Engklek</h3>
+                        <h3>Pola Lantai Engklak</h3>
                         <p>Tersusun atas bentuk persegi, persegi panjang, dan setengah lingkaran/kubah.</p>
                     </div>
 
                     <!-- Ship -->
-                    <div class="apersepsi-card-p2">
+                    <div class="apersepsi-card-p2" onclick="app.goToCompositionFromApersepsi('ship')">
                         <div class="apersepsi-svg-box-p2">
                             <!-- Geometric Ship -->
                             <svg viewBox="0 0 160 120" class="showcase-svg">
@@ -868,7 +879,7 @@
                     </div>
 
                     <!-- House -->
-                    <div class="apersepsi-card-p2">
+                    <div class="apersepsi-card-p2" onclick="app.goToCompositionFromApersepsi('house')">
                         <div class="apersepsi-svg-box-p2">
                             <!-- Geometric House -->
                             <svg viewBox="0 0 160 120" class="showcase-svg">
@@ -955,6 +966,30 @@
                                                 data-slot="sail-small" fill="#eaeaea" stroke="#aaa" stroke-width="3"
                                                 stroke-dasharray="6,4" />
                                         </g>
+
+                                        <!-- Engklek template (initially hidden) -->
+                                        <g class="template-engklek hide">
+                                            <!-- track-lower target -->
+                                            <rect x="205" y="180" width="40" height="80" class="target-slot"
+                                                data-slot="track-lower" fill="#eaeaea" stroke="#aaa" stroke-width="3"
+                                                stroke-dasharray="6,4" />
+                                            <!-- track-mid target -->
+                                            <rect x="205" y="140" width="40" height="40" class="target-slot"
+                                                data-slot="track-mid" fill="#eaeaea" stroke="#aaa" stroke-width="3"
+                                                stroke-dasharray="6,4" />
+                                            <!-- wings target -->
+                                            <rect x="165" y="100" width="120" height="40" class="target-slot"
+                                                data-slot="wings" fill="#eaeaea" stroke="#aaa" stroke-width="3"
+                                                stroke-dasharray="6,4" />
+                                            <!-- track-upper target -->
+                                            <rect x="205" y="60" width="40" height="40" class="target-slot"
+                                                data-slot="track-upper" fill="#eaeaea" stroke="#aaa" stroke-width="3"
+                                                stroke-dasharray="6,4" />
+                                            <!-- gunung target -->
+                                            <path d="M 205,60 A 20,20 0 0,1 245,60 Z" class="target-slot"
+                                                data-slot="gunung" fill="#eaeaea" stroke="#aaa" stroke-width="3"
+                                                stroke-dasharray="6,4" />
+                                        </g>
                                     </g>
                                 </svg>
                             </div>
@@ -993,6 +1028,10 @@
                                     onclick="app.selectCompositionTemplate('ship')">
                                     <i class="fas fa-ship"></i> Kapal
                                 </button>
+                                <button id="btn-select-engklek" class="tab-select"
+                                    onclick="app.selectCompositionTemplate('engklek')">
+                                    <i class="fas fa-th-large"></i> Engklak
+                                </button>
                             </div>
 
                             <hr class="divider">
@@ -1000,21 +1039,30 @@
                             <h4>Kepingan Bangun Datar:</h4>
                             <div class="pieces-info-list">
                                 <div class="piece-info-row">
-                                    <span class="shape-indicator bg-red triangle-indicator"></span> Segitiga (Atap /
-                                    Layar)
+                                    <span class="shape-indicator bg-red triangle-indicator"></span> Segitiga (Atap / Layar)
                                 </div>
                                 <div class="piece-info-row">
-                                    <span class="shape-indicator bg-purple square-indicator"></span> Persegi (Dinding
-                                    Rumah)
+                                    <span class="shape-indicator bg-purple square-indicator"></span> Persegi (Dinding / Pola Engklak)
                                 </div>
                                 <div class="piece-info-row">
-                                    <span class="shape-indicator bg-orange rect-indicator"></span> Persegi Panjang
-                                    (Pintu)
+                                    <span class="shape-indicator bg-orange rect-indicator"></span> Persegi Panjang (Pintu / Track)
                                 </div>
                                 <div class="piece-info-row">
-                                    <span class="shape-indicator bg-yellow trapezoid-indicator"></span> Trapesium
-                                    (Lambung Kapal)
+                                    <span class="shape-indicator bg-yellow trapezoid-indicator"></span> Trapesium (Lambung Kapal)
                                 </div>
+                                <div class="piece-info-row">
+                                    <span class="shape-indicator bg-green halfcircle-indicator"></span> Setengah Lingkaran (Gunung)
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Teacher Conversation Area -->
+                        <div class="teacher-chat-section">
+                            <div class="teacher-avatar-mini">
+                                <img src="assets/images/hijab_teacher.png" alt="Guru Hijab" class="mini-teacher-img">
+                            </div>
+                            <div class="teacher-speech-bubble-mini" id="composition-speech-bubble">
+                                Ayo susun kepingan segitiga, persegi, dan persegi panjang ini menjadi rumah yang indah!
                             </div>
                         </div>
 
@@ -1108,6 +1156,17 @@
                                         <span class="basket-placeholder">Seret Segiempat Ke Sini</span>
                                     </div>
                                 </div>
+
+                                <!-- Basket Setengah Lingkaran -->
+                                <div class="basket-card hide" data-basket="lengkung" id="basket-lengkung">
+                                    <div class="basket-header bg-green">
+                                        <i class="fas fa-circle-notch"></i> Keranjang Lengkung
+                                    </div>
+                                    <div class="basket-contents" id="contents-lengkung">
+                                        <!-- Items dropped here will list -->
+                                        <span class="basket-placeholder">Seret Kubah Ke Sini</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -1128,6 +1187,21 @@
                     </div>
                     <div class="card-body scrollable">
                         <div class="decomp-scorecard">
+                            <!-- Template Selector for Decomposition -->
+                            <h4>Pilih Bangun Gabungan:</h4>
+                            <div class="template-selector margin-bottom-10">
+                                <button id="btn-decomp-select-house" class="tab-select active"
+                                    onclick="app.selectDecompositionTemplate('house')">
+                                    <i class="fas fa-home"></i> Rumah
+                                </button>
+                                <button id="btn-decomp-select-engklek" class="tab-select"
+                                    onclick="app.selectDecompositionTemplate('engklek')">
+                                    <i class="fas fa-th-large"></i> Engklak
+                                </button>
+                            </div>
+
+                            <hr class="divider">
+
                             <h4>Status Pengelompokan:</h4>
                             <ul class="decomp-status-list">
                                 <li>
@@ -1143,6 +1217,24 @@
                                     <span id="status-door" class="badge-status pending">Belum Diseret</span>
                                 </li>
                             </ul>
+
+                            <hr class="divider">
+
+                            <!-- Teacher Conversation Area -->
+                            <div class="teacher-chat-section">
+                                <div class="teacher-avatar-mini">
+                                    <img src="assets/images/hijab_teacher.png" alt="Guru Hijab" class="mini-teacher-img">
+                                </div>
+                                <div class="teacher-speech-bubble-mini" id="decomposition-speech-bubble">
+                                    Ayo bantu uraikan bagian-bagian rumah ini ke keranjang yang sesuai!
+                                </div>
+                            </div>
+
+                            <div class="reset-box margin-top-10">
+                                <button class="btn-blue-outline w-100" onclick="app.resetDecomposition()">
+                                    <i class="fas fa-redo"></i> Ulangi Penguraian
+                                </button>
+                            </div>
 
                             <hr class="divider">
 
