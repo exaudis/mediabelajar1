@@ -2186,14 +2186,14 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: flex-end; /* Align characters to bottom */
-    width: 195px;
+    width: 225px;
     height: 100%;
     position: relative;
     flex-shrink: 0;
 }
 
 .character-svg {
-    max-height: 135px; /* Compact height to leave plenty of room at the top */
+    max-height: 120px; /* Slightly shorter to prevent pushing bubble into the ceiling */
     width: auto;
     object-fit: contain;
     mix-blend-mode: multiply; /* Blends white image backgrounds perfectly with the landscape */
@@ -2207,15 +2207,15 @@ body {
     padding: 8px 10px;
     font-family: 'Fredoka', sans-serif;
     font-weight: 700;
-    font-size: 0.74rem;
+    font-size: 0.72rem; /* Compact font size */
     color: var(--text-dark);
-    line-height: 1.35;
+    line-height: 1.3;
     text-align: center;
     position: relative;
     box-shadow: 0 5px 0 var(--shadow-color);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     word-wrap: break-word;
-    max-width: 195px;
+    max-width: 220px; /* Wider bubble to make text shorter vertically */
 }
 
 .speech-bubble.left::after {
