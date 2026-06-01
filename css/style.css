@@ -2330,8 +2330,9 @@ body {
     flex: 1;
     padding: 0 10px;
     justify-content: center;
-    align-content: center; /* Vertically center grid inside container */
-    height: 100%;
+    align-content: start; /* Align to top to position in the upper middle */
+    margin-top: 40px; /* Shift down to look balanced in the sky area */
+    height: auto;
 }
 
 .apersepsi-card {
@@ -2444,6 +2445,7 @@ body {
     .apersepsi-cards-grid {
         grid-template-columns: repeat(3, 1fr);
         grid-gap: 6px;
+        margin-top: 15px; /* Shorter margin for smaller screens */
     }
     .apersepsi-cards-grid .apersepsi-card {
         width: 80px;
