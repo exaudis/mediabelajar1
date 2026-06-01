@@ -16,7 +16,8 @@ class MathApp {
         
         this.p1Screens = [
             'screen-p1-intro',
-            'screen-p1-apersepsi',
+            'screen-p1-apersepsi-segitiga',
+            'screen-p1-apersepsi-segiempat',
             'screen-p1-eksplorasi-segitiga',
             'screen-p1-eksplorasi-segiempat',
             'screen-p1-selesai'
@@ -166,6 +167,35 @@ class MathApp {
         
         // Window resize listener to keep snapped pieces aligned
         window.addEventListener('resize', () => this.handleResize());
+
+        // Handle page visibility change (e.g. app minimized, tab switched, phone locked)
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                this.pauseAudioOnHide();
+            } else {
+                this.resumeAudioOnShow();
+            }
+        });
+
+        // Handle pagehide event (e.g. closing page/tab or navigating away)
+        window.addEventListener('pagehide', () => {
+            this.pauseAudioOnHide();
+        });
+    }
+
+    pauseAudioOnHide() {
+        if (this.audioCtx && this.audioCtx.state === 'running') {
+            this.audioCtx.suspend();
+        }
+    }
+
+    resumeAudioOnShow() {
+        // Only resume if sound is not muted
+        if (this.soundMuted) return;
+        
+        if (this.audioCtx && this.audioCtx.state === 'suspended') {
+            this.audioCtx.resume();
+        }
     }
 
     // ================= SOUND MANAGER (WEB AUDIO API) =================
@@ -217,6 +247,15 @@ class MathApp {
         if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
 
         this.bgmPlaying = true;
+
+        // Restore BGM gain to its active level (0.15) smoothly
+        if (this.bgmGain) {
+            const now = this.audioCtx.currentTime;
+            this.bgmGain.gain.cancelScheduledValues(now);
+            this.bgmGain.gain.setValueAtTime(this.bgmGain.gain.value, now);
+            this.bgmGain.gain.linearRampToValueAtTime(0.15, now + 0.2);
+        }
+
         this._bgmLoop();
     }
 
@@ -287,6 +326,13 @@ class MathApp {
         if (this._bgmTimer) {
             clearTimeout(this._bgmTimer);
             this._bgmTimer = null;
+        }
+        // Smoothly fade out and mute BGM gain to stop currently scheduled oscillators
+        if (this.bgmGain && this.audioCtx) {
+            const now = this.audioCtx.currentTime;
+            this.bgmGain.gain.cancelScheduledValues(now);
+            this.bgmGain.gain.setValueAtTime(this.bgmGain.gain.value, now);
+            this.bgmGain.gain.linearRampToValueAtTime(0, now + 0.2);
         }
     }
 
@@ -463,9 +509,14 @@ class MathApp {
         // Play navigate sound for screen transitions
         this.playSound('navigate');
 
-        // Start BGM on first interaction if not already playing
-        if (!this.bgmPlaying && !this.soundMuted) {
-            this.startBGM();
+        // Stop BGM if we return to the welcome screen (closing the game flow)
+        if (screenId === 'screen-welcome') {
+            this.stopBGM();
+        } else {
+            // Start BGM on first interaction if not already playing
+            if (!this.bgmPlaying && !this.soundMuted) {
+                this.startBGM();
+            }
         }
 
         // Hide all screens
@@ -543,8 +594,8 @@ class MathApp {
     goToMenu() {
         this.activeMeeting = null;
         this.screensFlow = [...this.baseScreens];
-        this.currentScreenIndex = 0; // Go back to welcome/start screen
-        this.showScreen('screen-welcome');
+        this.currentScreenIndex = 4; // Go to screen-menu instead of screen-welcome
+        this.showScreen('screen-menu');
     }
 
     selectMeeting(num) {
@@ -556,6 +607,21 @@ class MathApp {
         }
         this.currentScreenIndex = 5; // First meeting screen (intro or apersepsi)
         this.showScreen(this.screensFlow[this.currentScreenIndex]);
+    }
+
+    goToExplorationFromApersepsi(shapeType, presetName) {
+        this.playSound('click');
+        if (shapeType === 'segitiga') {
+            this.selectMeeting(1);
+            this.currentScreenIndex = 8; // index of screen-p1-eksplorasi-segitiga
+            this.showScreen('screen-p1-eksplorasi-segitiga');
+            this.setTrianglePreset(presetName);
+        } else if (shapeType === 'segiempat') {
+            this.selectMeeting(1);
+            this.currentScreenIndex = 9; // index of screen-p1-eksplorasi-segiempat
+            this.showScreen('screen-p1-eksplorasi-segiempat');
+            this.setQuadPreset(presetName);
+        }
     }
 
 
@@ -660,6 +726,7 @@ class MathApp {
         this.updateEdgeBadgePosition('AB', data.points.A, data.points.B);
         this.updateEdgeBadgePosition('BC', data.points.B, data.points.C);
         this.updateEdgeBadgePosition('CA', data.points.C, data.points.A);
+        this.drawTriangleObject(presetName);
     }
 
     updateEdgeBadgePosition(edge, p1, p2) {
@@ -845,6 +912,7 @@ class MathApp {
 
             this.updateQuadEdgeBadgePosition(e.id, data.points[e.p1], data.points[e.p2]);
         });
+        this.drawQuadObject(presetName);
     }
 
     updateQuadEdgeBadgePosition(edge, p1, p2) {
@@ -862,6 +930,184 @@ class MathApp {
 
         const badgeGroup = document.getElementById(`qbadge-${edge}`);
         badgeGroup.setAttribute('transform', `translate(${badgeX - 30}, ${badgeY - 11})`);
+    }
+
+    drawTriangleObject(presetName) {
+        const bgGroup = document.getElementById('preset-drawing-bg');
+        if (!bgGroup) return;
+        
+        const data = this.triangleData[presetName];
+        const pts = data.points;
+        let html = '';
+        
+        if (presetName === 'samasisi') {
+            // Tricky Triangle
+            html = `
+                <polygon points="${pts.A.x},${pts.A.y} ${pts.B.x},${pts.B.y} ${pts.C.x},${pts.C.y}" fill="#e67e22" stroke="#a0522d" stroke-width="6" stroke-linejoin="round" />
+                <polygon points="${pts.A.x},${pts.A.y+6} ${pts.B.x-6},${pts.B.y-3} ${pts.C.x+6},${pts.C.y-3}" fill="#d35400" />
+                <circle cx="200" cy="150" r="6" fill="#2c3e50" />
+                <circle cx="230" cy="150" r="6" fill="#2c3e50" />
+                <path d="M210,162 Q215,170 220,162" fill="none" stroke="#2c3e50" stroke-width="3" stroke-linecap="round" />
+                <circle cx="200" cy="85" r="7" fill="#f1c40f" stroke="#d35400" stroke-width="1.5" />
+                <circle cx="165" cy="135" r="7" fill="#f1c40f" stroke="#d35400" stroke-width="1.5" />
+                <circle cx="235" cy="135" r="7" fill="#f1c40f" stroke="#d35400" stroke-width="1.5" />
+                <circle cx="130" cy="185" r="7" fill="#f1c40f" stroke="#d35400" stroke-width="1.5" />
+                <circle cx="200" cy="185" r="7" fill="#f1c40f" stroke="#d35400" stroke-width="1.5" />
+                <circle cx="270" cy="185" r="7" fill="#f1c40f" stroke="#d35400" stroke-width="1.5" />
+            `;
+        } else if (presetName === 'samakaki') {
+            // Gantungan Baju
+            html = `
+                <path d="M 200,${pts.A.y} C 200,${pts.A.y-18} 216,${pts.A.y-18} 212,${pts.A.y-25} C 208,${pts.A.y-32} 192,${pts.A.y-32} 192,${pts.A.y-22} C 192,${pts.A.y-18} 196,${pts.A.y-15} 200,${pts.A.y}" fill="none" stroke="#7f8c8d" stroke-width="5" stroke-linecap="round" />
+                <polygon points="${pts.A.x},${pts.A.y} ${pts.B.x},${pts.B.y} ${pts.C.x},${pts.C.y}" fill="none" stroke="#d35400" stroke-width="10" stroke-linejoin="round" />
+                <polygon points="${pts.A.x},${pts.A.y+8} ${pts.B.x-8},${pts.B.y-4} ${pts.C.x+8},${pts.C.y-4}" fill="none" stroke="#e67e22" stroke-width="6" stroke-linejoin="round" />
+                <line x1="${pts.C.x+15}" y1="${pts.C.y-10}" x2="${pts.B.x-15}" y2="${pts.B.y-10}" stroke="#d35400" stroke-width="5" />
+            `;
+        } else if (presetName === 'sikusiku') {
+            // Potongan Sandwich
+            html = `
+                <polygon points="${pts.A.x},${pts.A.y} ${pts.B.x},${pts.B.y} ${pts.C.x},${pts.C.y}" fill="#d35400" stroke-linejoin="round" />
+                <polygon points="${pts.A.x+5},${pts.A.y+6} ${pts.B.x-8},${pts.B.y-3} ${pts.C.x+5},${pts.C.y-5}" fill="#f39c12" />
+                <polygon points="${pts.A.x+10},${pts.A.y+12} ${pts.B.x-14},${pts.B.y-6} ${pts.C.x+10},${pts.C.y-10}" fill="#2ecc71" />
+                <path d="M ${pts.A.x+16},${pts.A.y+24} L ${pts.B.x-16},${pts.B.y-16}" stroke="#e74c3c" stroke-width="12" stroke-linecap="round" />
+                <polygon points="${pts.A.x+20},${pts.A.y+26} ${pts.B.x-24},${pts.B.y-12} ${pts.C.x+20},${pts.C.y-20}" fill="#f1c40f" />
+                <polygon points="${pts.A.x+25},${pts.A.y+32} ${pts.B.x-32},${pts.B.y-16} ${pts.C.x+25},${pts.C.y-24}" fill="#ffeaa7" />
+            `;
+        } else if (presetName === 'sembarang') {
+            // Segitiga Sembarang
+            html = `
+                <polygon points="${pts.A.x},${pts.A.y} ${pts.B.x},${pts.B.y} ${pts.C.x},${pts.C.y}" fill="#74b9ff" stroke="#0984e3" stroke-width="5" stroke-linejoin="round" opacity="0.8" />
+            `;
+        }
+        bgGroup.innerHTML = html;
+    }
+
+    drawQuadObject(presetName) {
+        const bgGroup = document.getElementById('qpreset-drawing-bg');
+        if (!bgGroup) return;
+        
+        const data = this.quadData[presetName];
+        const pts = data.points;
+        let html = '';
+        
+        if (presetName === 'persegi') {
+            // Jam Dinding
+            html = `
+                <rect x="${pts.A.x}" y="${pts.A.y}" width="140" height="140" rx="14" fill="#7f8c8d" stroke="#2d3436" stroke-width="6" />
+                <rect x="${pts.A.x+10}" y="${pts.A.y+10}" width="120" height="120" rx="8" fill="#ffffff" stroke="#2d3436" stroke-width="2" />
+                <circle cx="200" cy="68" r="3" fill="#2d3436" />
+                <circle cx="200" cy="172" r="3" fill="#2d3436" />
+                <circle cx="148" cy="120" r="3" fill="#2d3436" />
+                <circle cx="252" cy="120" r="3" fill="#2d3436" />
+                <line x1="200" y1="120" x2="200" y2="85" stroke="#2d3436" stroke-width="5" stroke-linecap="round" />
+                <line x1="200" y1="120" x2="235" y2="120" stroke="#e74c3c" stroke-width="3" stroke-linecap="round" />
+                <circle cx="200" cy="120" r="5" fill="#2d3436" />
+            `;
+        } else if (presetName === 'persegipanjang') {
+            // Papan Tulis
+            html = `
+                <rect x="${pts.A.x-6}" y="${pts.A.y-6}" width="212" height="132" rx="8" fill="#a0522d" stroke="#2d3436" stroke-width="5" />
+                <rect x="${pts.A.x}" y="${pts.A.y}" width="200" height="120" rx="2" fill="#27ae60" />
+                <line x1="120" y1="186" x2="100" y2="230" stroke="#a0522d" stroke-width="6" stroke-linecap="round" />
+                <line x1="280" y1="186" x2="300" y2="230" stroke="#a0522d" stroke-width="6" stroke-linecap="round" />
+                <rect x="180" y="176" width="10" height="4" fill="#ffffff" stroke="#2d3436" stroke-width="1" />
+                <rect x="195" y="175" width="15" height="5" fill="#d35400" stroke="#2d3436" stroke-width="1" />
+            `;
+        } else if (presetName === 'jajargenjang') {
+            // Panel Surya
+            html = `
+                <line x1="190" y1="180" x2="190" y2="240" stroke="#7f8c8d" stroke-width="8" stroke-linecap="round" />
+                <line x1="160" y1="240" x2="220" y2="240" stroke="#7f8c8d" stroke-width="8" stroke-linecap="round" />
+                <polygon points="${pts.A.x},${pts.A.y} ${pts.B.x},${pts.B.y} ${pts.C.x},${pts.C.y} ${pts.D.x},${pts.D.y}" fill="#2c3e50" stroke="#7f8c8d" stroke-width="5" stroke-linejoin="round" />
+                <line x1="185" y1="60" x2="145" y2="180" stroke="#3498db" stroke-width="2" />
+                <line x1="230" y1="60" x2="190" y2="180" stroke="#3498db" stroke-width="2" />
+                <line x1="275" y1="60" x2="235" y2="180" stroke="#3498db" stroke-width="2" />
+                <line x1="130" y1="90" x2="310" y2="90" stroke="#3498db" stroke-width="2" />
+                <line x1="120" y1="120" x2="300" y2="120" stroke="#3498db" stroke-width="2" />
+                <line x1="110" y1="150" x2="290" y2="150" stroke="#3498db" stroke-width="2" />
+            `;
+        } else if (presetName === 'trapesium') {
+            // Tas Belanja
+            html = `
+                <path d="M190,60 Q210,20 230,60" fill="none" stroke="#2d3436" stroke-width="5" stroke-linecap="round" />
+                <polygon points="${pts.A.x},${pts.A.y} ${pts.B.x},${pts.B.y} ${pts.C.x},${pts.C.y} ${pts.D.x},${pts.D.y}" fill="#e74c3c" stroke="#2d3436" stroke-width="5" stroke-linejoin="round" />
+                <polygon points="${pts.A.x+5},${pts.A.y+5} ${pts.B.x-5},${pts.B.y+5} ${pts.C.x-8},${pts.C.y-5} ${pts.D.x+8},${pts.D.y-5}" fill="#ff7675" />
+                <circle cx="210" cy="120" r="15" fill="#f1c40f" />
+                <path d="M202,120 A 8,8 0 0,0 218,120" fill="none" stroke="#2d3436" stroke-width="3" stroke-linecap="round" />
+            `;
+        } else if (presetName === 'layanglayang') {
+            // Layang-layang
+            html = `
+                <path d="M200,220 Q205,235 200,250 T205,268" fill="none" stroke="#2d3436" stroke-width="3" />
+                <polygon points="195,235 205,230 200,235 208,240" fill="#e74c3c" stroke="#2d3436" stroke-width="1" />
+                <polygon points="195,250 205,245 200,250 208,255" fill="#f1c40f" stroke="#2d3436" stroke-width="1" />
+                <polygon points="${pts.A.x},${pts.A.y} ${pts.B.x},${pts.B.y} ${pts.C.x},${pts.C.y} ${pts.D.x},${pts.D.y}" fill="#3498db" stroke="#2d3436" stroke-width="4" stroke-linejoin="round" />
+                <polygon points="200,40 290,110 200,110" fill="#e74c3c" opacity="0.85" />
+                <polygon points="200,40 110,110 200,110" fill="#f1c40f" opacity="0.85" />
+                <polygon points="200,110 290,110 200,220" fill="#2ecc71" opacity="0.85" />
+                <line x1="200" y1="40" x2="200" y2="220" stroke="#2d3436" stroke-width="2" />
+                <line x1="110" y1="110" x2="290" y2="110" stroke="#2d3436" stroke-width="2" />
+            `;
+        } else if (presetName === 'belahketupat') {
+            // Rambu Lalu Lintas
+            html = `
+                <rect x="195" y="220" width="10" height="40" fill="#7f8c8d" stroke="#2d3436" stroke-width="2" />
+                <polygon points="${pts.A.x},${pts.A.y} ${pts.B.x},${pts.B.y} ${pts.C.x},${pts.C.y} ${pts.D.x},${pts.D.y}" fill="#f1c40f" stroke="#2d3436" stroke-width="5" stroke-linejoin="round" />
+                <polygon points="${pts.A.x},${pts.A.y+10} ${pts.B.x-10},${pts.B.y} ${pts.C.x},${pts.C.y-10} ${pts.D.x+10},${pts.D.y}" fill="none" stroke="#2d3436" stroke-width="2.5" />
+                <rect x="188" y="95" width="24" height="70" rx="8" fill="#2d3436" />
+                <circle cx="200" cy="110" r="8" fill="#e74c3c" stroke="#fff" stroke-width="1.5" />
+                <circle cx="200" cy="130" r="8" fill="#f1c40f" stroke="#fff" stroke-width="1.5" />
+                <circle cx="200" cy="150" r="8" fill="#2ecc71" stroke="#fff" stroke-width="1.5" />
+            `;
+        }
+        bgGroup.innerHTML = html;
+    }
+
+    showCompositionPieceDetails(pieceId) {
+        this.playSound('measure');
+        const descriptions = {
+            roof: "Atap Rumah: Segitiga Sama Kaki (Sudut: 40&deg;, 70&deg;, 70&deg; | Sisi: 9 cm, 9 cm, 6 cm)",
+            body: "Dinding Rumah: Persegi (Sudut: 90&deg;, 90&deg;, 90&deg;, 90&deg; | Sisi: 7 cm, 7 cm, 7 cm, 7 cm)",
+            door: "Pintu Rumah: Persegi Panjang (Sudut: 90&deg;, 90&deg;, 90&deg;, 90&deg; | Sisi: 8 cm, 8 cm, 5 cm, 5 cm)",
+            hull: "Lambung Kapal: Trapesium Sama Kaki (Sudut: 110&deg;, 70&deg;, 70&deg;, 110&deg; | Sisi: 12 cm, 6 cm, 5 cm, 6 cm)",
+            'sail-big': "Layar Besar: Segitiga Siku-Siku (Sudut: 90&deg;, 53&deg;, 37&deg; | Sisi: 6 cm, 10 cm, 8 cm)",
+            'sail-small': "Layar Kecil: Segitiga Siku-Siku (Sudut: 90&deg;, 45&deg;, 45&deg; | Sisi: 5 cm, 7 cm, 5 cm)"
+        };
+
+        const popup = document.getElementById('composition-info-popup');
+        const textSpan = document.getElementById('composition-info-text');
+        
+        if (popup && textSpan && descriptions[pieceId]) {
+            textSpan.innerHTML = descriptions[pieceId];
+            popup.className = 'measurement-popup';
+            
+            if (this._compInfoTimer) clearTimeout(this._compInfoTimer);
+            this._compInfoTimer = setTimeout(() => {
+                popup.className = 'measurement-popup hide';
+            }, 5000);
+        }
+    }
+
+    showDecompositionPieceDetails(pieceId) {
+        this.playSound('measure');
+        const descriptions = {
+            'decomp-roof': "Atap: Segitiga Sama Kaki (Sudut: 40&deg;, 70&deg;, 70&deg; | Sisi: 9 cm, 9 cm, 6 cm)",
+            'decomp-body': "Dinding: Persegi (Sudut: 90&deg;, 90&deg;, 90&deg;, 90&deg; | Sisi: 7 cm, 7 cm, 7 cm, 7 cm)",
+            'decomp-door': "Pintu: Persegi Panjang (Sudut: 90&deg;, 90&deg;, 90&deg;, 90&deg; | Sisi: 8 cm, 8 cm, 5 cm, 5 cm)"
+        };
+
+        const popup = document.getElementById('decomposition-info-popup');
+        const textSpan = document.getElementById('decomposition-info-text');
+        
+        if (popup && textSpan && descriptions[pieceId]) {
+            textSpan.innerHTML = descriptions[pieceId];
+            popup.className = 'measurement-popup';
+            
+            if (this._decompInfoTimer) clearTimeout(this._decompInfoTimer);
+            this._decompInfoTimer = setTimeout(() => {
+                popup.className = 'measurement-popup hide';
+            }, 5000);
+        }
     }
 
     clickQuadVertex(nodeName) {
@@ -969,15 +1215,26 @@ class MathApp {
         let pieces = [];
         if (this.compositionTemplate === 'house') {
             pieces = [
-                { id: 'roof', type: 'triangle', html: `<polygon points="120,5 235,85 5,85" fill="#ff7675" stroke="#2d3436" stroke-width="3.5" style="pointer-events: auto;"/>`, w: 240, h: 90 },
-                { id: 'body', type: 'square', html: `<rect x="5" y="5" width="170" height="125" fill="#a29bfe" stroke="#2d3436" stroke-width="3.5" style="pointer-events: auto;"/>`, w: 180, h: 135 },
-                { id: 'door', type: 'rectangle', html: `<rect x="5" y="5" width="40" height="70" fill="#ffeaa7" stroke="#2d3436" stroke-width="3" style="pointer-events: auto;"/>`, w: 50, h: 80 }
+                { id: 'roof', type: 'triangle', html: `<polygon points="120,5 235,85 5,85" fill="#ff7675" stroke="#2d3436" stroke-width="3.5" style="pointer-events: auto;"/>
+                <line x1="62" y1="45" x2="178" y2="45" stroke="#c0392b" stroke-width="2" />
+                <line x1="33" y1="65" x2="207" y2="65" stroke="#c0392b" stroke-width="2" />`, w: 240, h: 90 },
+                { id: 'body', type: 'square', html: `<rect x="5" y="5" width="170" height="125" fill="#a29bfe" stroke="#2d3436" stroke-width="3.5" style="pointer-events: auto;"/>
+                <line x1="5" y1="35" x2="175" y2="35" stroke="#6c5ce7" stroke-width="2" />
+                <line x1="5" y1="65" x2="175" y2="65" stroke="#6c5ce7" stroke-width="2" />
+                <line x1="5" y1="95" x2="175" y2="95" stroke="#6c5ce7" stroke-width="2" />`, w: 180, h: 135 },
+                { id: 'door', type: 'rectangle', html: `<rect x="5" y="5" width="40" height="70" fill="#ffeaa7" stroke="#2d3436" stroke-width="3" style="pointer-events: auto;"/>
+                <line x1="25" y1="5" x2="25" y2="75" stroke="#d35400" stroke-width="1.5" />
+                <circle cx="33" cy="40" r="3" fill="#d35400" />`, w: 50, h: 80 }
             ];
         } else {
             pieces = [
-                { id: 'hull', type: 'trapezoid', html: `<polygon points="5,5 315,5 265,60 55,60" fill="#ffeaa7" stroke="#2d3436" stroke-width="3.5" style="pointer-events: auto;"/>`, w: 320, h: 65 },
-                { id: 'sail-big', type: 'triangle', html: `<polygon points="95,5 95,125 5,125" fill="#ff7675" stroke="#2d3436" stroke-width="3.5" style="pointer-events: auto;"/>`, w: 100, h: 130 },
-                { id: 'sail-small', type: 'triangle', html: `<polygon points="5,5 5,100 85,100" fill="#74b9ff" stroke="#2d3436" stroke-width="3.5" style="pointer-events: auto;"/>`, w: 90, h: 105 }
+                { id: 'hull', type: 'trapezoid', html: `<polygon points="5,5 315,5 265,60 55,60" fill="#ffeaa7" stroke="#2d3436" stroke-width="3.5" style="pointer-events: auto;"/>
+                <line x1="30" y1="23" x2="290" y2="23" stroke="#d35400" stroke-width="2" />
+                <line x1="45" y1="41" x2="275" y2="41" stroke="#d35400" stroke-width="2" />`, w: 320, h: 65 },
+                { id: 'sail-big', type: 'triangle', html: `<polygon points="95,5 95,125 5,125" fill="#ff7675" stroke="#2d3436" stroke-width="3.5" style="pointer-events: auto;"/>
+                <line x1="95" y1="5" x2="50" y2="125" stroke="#c0392b" stroke-width="1.5" />`, w: 100, h: 130 },
+                { id: 'sail-small', type: 'triangle', html: `<polygon points="5,5 5,100 85,100" fill="#74b9ff" stroke="#2d3436" stroke-width="3.5" style="pointer-events: auto;"/>
+                <line x1="5" y1="5" x2="45" y2="100" stroke="#0984e3" stroke-width="1.5" />`, w: 90, h: 105 }
             ];
         }
 
@@ -1027,11 +1284,15 @@ class MathApp {
     bindSVGDragHandlers(el, targetId) {
         let isDragging = false;
         let startX, startY;
+        let clickStartX, clickStartY;
         let originalLeft = parseFloat(el.style.left);
         let originalTop = parseFloat(el.style.top);
 
         const onStart = (e) => {
-            if (this.compositionTargets[this.compositionTemplate][targetId].snapped) return;
+            if (this.compositionTargets[this.compositionTemplate][targetId].snapped) {
+                this.showCompositionPieceDetails(targetId);
+                return;
+            }
 
             e.preventDefault();
             isDragging = true;
@@ -1044,6 +1305,8 @@ class MathApp {
 
             startX = clientX - el.offsetLeft;
             startY = clientY - el.offsetTop;
+            clickStartX = clientX;
+            clickStartY = clientY;
 
             // Lift z-index
             el.style.zIndex = 1000;
@@ -1074,10 +1337,28 @@ class MathApp {
             if (!isDragging) return;
             isDragging = false;
 
+            const clientX = e.clientX || (e.changedTouches && e.changedTouches[0].clientX) || 0;
+            const clientY = e.clientY || (e.changedTouches && e.changedTouches[0].clientY) || 0;
+
+            const distMoved = Math.sqrt(Math.pow(clientX - clickStartX, 2) + Math.pow(clientY - clickStartY, 2));
+
             // Get bounding rect before removing dragging class
             const elRect = el.getBoundingClientRect();
             el.classList.remove('dragging');
             el.style.cursor = 'grab';
+
+            if (distMoved < 6) {
+                // Click details
+                this.showCompositionPieceDetails(targetId);
+                el.style.transition = 'left 0.2s, top 0.2s';
+                el.style.left = `${originalLeft}px`;
+                el.style.top = `${originalTop}px`;
+                el.style.zIndex = 100;
+                setTimeout(() => {
+                    el.style.transition = '';
+                }, 200);
+                return;
+            }
 
             const svg = document.getElementById('composition-svg');
             if (!svg) return;
@@ -1191,11 +1472,15 @@ class MathApp {
     bindDecompPieceHandlers(el, id) {
         let isDragging = false;
         let startX, startY;
+        let clickStartX, clickStartY;
         let originalLeft = el.offsetLeft;
         let originalTop = el.offsetTop;
 
         const onStart = (e) => {
-            if (this.decompLog[id]) return; // Already sorted
+            if (this.decompLog[id]) {
+                this.showDecompositionPieceDetails(id);
+                return;
+            }
 
             e.preventDefault();
             isDragging = true;
@@ -1207,6 +1492,8 @@ class MathApp {
 
             startX = clientX - el.offsetLeft;
             startY = clientY - el.offsetTop;
+            clickStartX = clientX;
+            clickStartY = clientY;
             el.style.zIndex = 1000;
         };
 
@@ -1234,6 +1521,17 @@ class MathApp {
             if (!isDragging) return;
             isDragging = false;
             el.style.cursor = 'grab';
+
+            const clientX = e.clientX || (e.changedTouches && e.changedTouches[0].clientX) || 0;
+            const clientY = e.clientY || (e.changedTouches && e.changedTouches[0].clientY) || 0;
+
+            const distMoved = Math.sqrt(Math.pow(clientX - clickStartX, 2) + Math.pow(clientY - clickStartY, 2));
+
+            if (distMoved < 6) {
+                this.showDecompositionPieceDetails(id);
+                this.bounceBack(el, originalLeft, originalTop);
+                return;
+            }
 
             // Check if dropped inside target baskets
             const rectSegitiga = document.getElementById('basket-segitiga').getBoundingClientRect();

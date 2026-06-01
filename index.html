@@ -231,118 +231,237 @@
             </div>
         </section>
 
-        <!-- ================= PERTEMUAN 1: APERSEPSI ================= -->
-        <section id="screen-p1-apersepsi" class="screen">
-            <div class="activity-container">
-                <h2 class="activity-title text-center">Benda Nyata di Sekitar Kita</h2>
-                <p class="activity-subtitle text-center">Sebelum mulai mengukur, perhatikan benda-benda nyata yang
-                    sering kita jumpai berikut ini!</p>
+        <!-- ================= PERTEMUAN 1: APERSEPSI SEGITIGA ================= -->
+        <section id="screen-p1-apersepsi-segitiga" class="screen apersepsi-screen">
+            <!-- Background landscape SVG -->
+            <svg viewBox="0 0 1000 562.5" class="screen-bg-svg" preserveAspectRatio="xMidYMid slice" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:1; pointer-events:none;">
+                <rect width="1000" height="562.5" fill="url(#sky-grad-segitiga)" />
+                <defs>
+                    <linearGradient id="sky-grad-segitiga" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#d4f3e5" />
+                        <stop offset="60%" stop-color="#eafaf1" />
+                        <stop offset="100%" stop-color="#ffffff" />
+                    </linearGradient>
+                    <linearGradient id="hill-grad-segitiga" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#55efc4" />
+                        <stop offset="100%" stop-color="#2ecc71" />
+                    </linearGradient>
+                </defs>
+                <path d="M-100,450 L100,300 L300,400 L550,220 L750,380 L900,280 L1100,450 Z" fill="#95afc0" opacity="0.4" />
+                <path d="M-50,470 L200,340 L450,420 L700,290 L950,430 L1150,470 Z" fill="#81ecec" opacity="0.3" />
+                <g fill="#d35400" stroke="#2d3436" stroke-width="2">
+                    <rect x="50" y="380" width="10" height="80" rx="2" />
+                    <rect x="200" y="390" width="10" height="80" rx="2" />
+                    <rect x="350" y="400" width="10" height="80" rx="2" />
+                    <rect x="500" y="400" width="10" height="80" rx="2" />
+                    <rect x="650" y="390" width="10" height="80" rx="2" />
+                    <rect x="800" y="380" width="10" height="80" rx="2" />
+                    <rect x="950" y="370" width="10" height="80" rx="2" />
+                    <rect x="0" y="400" width="1000" height="8" />
+                    <rect x="0" y="430" width="1000" height="8" />
+                </g>
+                <path d="M-50,440 Q250,380 500,450 T1050,420 L1050,562.5 L-50,562.5 Z" fill="url(#hill-grad-segitiga)" />
+                <path d="M-50,470 Q350,440 700,480 T1050,460 L1050,562.5 L-50,562.5 Z" fill="#27ae60" opacity="0.8" />
+            </svg>
 
-                <div class="apersepsi-grid">
-                    <!-- Segitiga Examples -->
-                    <div class="apersepsi-col">
-                        <h3 class="shape-type-title color-red">Benda Berbentuk Segitiga</h3>
-                        <div class="item-showcase-row">
-                            <div class="item-card">
-                                <div class="item-svg-box">
-                                    <!-- Hanger -->
-                                    <svg viewBox="0 0 100 80" class="showcase-svg">
-                                        <path
-                                            d="M50,15 C52,10 48,10 50,5 C53,0 58,10 54,15 L90,60 C93,65 90,68 85,68 L15,68 C10,68 7,65 10,60 Z"
-                                            fill="none" stroke="#e67e22" stroke-width="4" />
-                                        <line x1="15" y1="62" x2="85" y2="62" stroke="#e67e22" stroke-width="3" />
-                                    </svg>
-                                </div>
-                                <span>Gantungan Baju</span>
-                            </div>
-                            <div class="item-card">
-                                <div class="item-svg-box">
-                                    <!-- Tricky Triangle / Peg Game -->
-                                    <svg viewBox="0 0 100 80" class="showcase-svg">
-                                        <polygon points="50,10 90,70 10,70" fill="#d35400" stroke="#2c3e50"
-                                            stroke-width="3" />
-                                        <!-- Pegs -->
-                                        <circle cx="50" cy="25" r="4" fill="#f1c40f" />
-                                        <circle cx="40" cy="45" r="4" fill="#f1c40f" />
-                                        <circle cx="60" cy="45" r="4" fill="#f1c40f" />
-                                        <circle cx="30" cy="62" r="4" fill="#f1c40f" />
-                                        <circle cx="50" cy="62" r="4" fill="#f1c40f" />
-                                        <circle cx="70" cy="62" r="4" fill="#f1c40f" />
-                                    </svg>
-                                </div>
-                                <span>Tricky Triangle</span>
-                            </div>
-                            <div class="item-card">
-                                <div class="item-svg-box">
-                                    <!-- Sandwich -->
-                                    <svg viewBox="0 0 100 80" class="showcase-svg">
-                                        <!-- Bread bottom -->
-                                        <polygon points="10,65 85,15 85,65" fill="#f39c12" stroke="#d35400"
-                                            stroke-width="3" />
-                                        <!-- Fillings -->
-                                        <polygon points="12,63 83,18 83,63" fill="#2ecc71" />
-                                        <line x1="15" y1="62" x2="82" y2="18" stroke="#e74c3c" stroke-width="6" />
-                                        <!-- Cheese/Bread top -->
-                                        <polygon points="15,60 80,20 80,60" fill="#f1c40f" />
-                                    </svg>
-                                </div>
-                                <span>Potongan Sandwich</span>
-                            </div>
+            <div class="apersepsi-layout">
+                <!-- Left Side: Teacher & Speech Bubble -->
+                <div class="char-container left-char">
+                    <div class="speech-bubble left float-anim">
+                        Anak-anak, perhatikan gantungan baju, papan permainan Tricky Triangle, dan potongan sandwich berikut. Ketiganya sama-sama berbentuk segitiga, bukan?
+                    </div>
+                    <img src="assets/images/hijab_teacher.png" alt="Guru Hijab" class="character-svg teacher-char float-anim-delay-1">
+                </div>
+
+                <!-- Center: Cards -->
+                <div class="apersepsi-cards-container">
+                    <div class="apersepsi-card float-anim-delay-1" onclick="app.goToExplorationFromApersepsi('segitiga', 'samakaki')">
+                        <div class="apersepsi-svg-wrapper">
+                            <!-- Hanger -->
+                            <svg viewBox="0 0 100 80" class="showcase-svg">
+                                <path d="M50,15 C52,10 48,10 50,5 C53,0 58,10 54,15 L90,60 C93,65 90,68 85,68 L15,68 C10,68 7,65 10,60 Z" fill="none" stroke="#e67e22" stroke-width="4" />
+                                <line x1="15" y1="62" x2="85" y2="62" stroke="#e67e22" stroke-width="3" />
+                            </svg>
                         </div>
+                        <span class="card-badge yellow">Gantungan Baju</span>
+                    </div>
+                    <div class="apersepsi-card float-anim-delay-2" onclick="app.goToExplorationFromApersepsi('segitiga', 'samasisi')">
+                        <div class="apersepsi-svg-wrapper">
+                            <!-- Tricky Triangle -->
+                            <svg viewBox="0 0 100 80" class="showcase-svg">
+                                <polygon points="50,10 90,70 10,70" fill="#d35400" stroke="#2c3e50" stroke-width="3" />
+                                <circle cx="50" cy="25" r="4" fill="#f1c40f" />
+                                <circle cx="40" cy="45" r="4" fill="#f1c40f" />
+                                <circle cx="60" cy="45" r="4" fill="#f1c40f" />
+                                <circle cx="30" cy="62" r="4" fill="#f1c40f" />
+                                <circle cx="50" cy="62" r="4" fill="#f1c40f" />
+                                <circle cx="70" cy="62" r="4" fill="#f1c40f" />
+                            </svg>
+                        </div>
+                        <span class="card-badge blue">Tricky Triangle</span>
+                    </div>
+                    <div class="apersepsi-card float-anim-delay-3" onclick="app.goToExplorationFromApersepsi('segitiga', 'sikusiku')">
+                        <div class="apersepsi-svg-wrapper">
+                            <!-- Sandwich -->
+                            <svg viewBox="0 0 100 80" class="showcase-svg">
+                                <polygon points="10,65 85,15 85,65" fill="#f39c12" stroke="#d35400" stroke-width="3" />
+                                <polygon points="12,63 83,18 83,63" fill="#2ecc71" />
+                                <line x1="15" y1="62" x2="82" y2="18" stroke="#e74c3c" stroke-width="6" />
+                                <polygon points="15,60 80,20 80,60" fill="#f1c40f" />
+                            </svg>
+                        </div>
+                        <span class="card-badge purple">Potongan Sandwich</span>
+                    </div>
+                </div>
+
+                <!-- Right Side: Student & Speech Bubble -->
+                <div class="char-container right-char">
+                    <div class="speech-bubble right float-anim-delay-2">
+                        Tetapi, apakah ketiga benda tersebut memiliki panjang sisi dan besar sudut yang sama? Coba amati dengan teliti ciri-ciri pada benda yang kalian peroleh
+                    </div>
+                    <img src="assets/images/hijab_student.png" alt="Siswa Hijab" class="character-svg student-char float-anim-delay-2">
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PERTEMUAN 1: APERSEPSI SEGIEMPAT ================= -->
+        <section id="screen-p1-apersepsi-segiempat" class="screen apersepsi-screen">
+            <!-- Background landscape SVG -->
+            <svg viewBox="0 0 1000 562.5" class="screen-bg-svg" preserveAspectRatio="xMidYMid slice" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:1; pointer-events:none;">
+                <rect width="1000" height="562.5" fill="url(#sky-grad-segiempat)" />
+                <defs>
+                    <linearGradient id="sky-grad-segiempat" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#d4f3e5" />
+                        <stop offset="60%" stop-color="#eafaf1" />
+                        <stop offset="100%" stop-color="#ffffff" />
+                    </linearGradient>
+                    <linearGradient id="hill-grad-segiempat" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#55efc4" />
+                        <stop offset="100%" stop-color="#2ecc71" />
+                    </linearGradient>
+                </defs>
+                <path d="M-100,450 L100,300 L300,400 L550,220 L750,380 L900,280 L1100,450 Z" fill="#95afc0" opacity="0.4" />
+                <path d="M-50,470 L200,340 L450,420 L700,290 L950,430 L1150,470 Z" fill="#81ecec" opacity="0.3" />
+                <g fill="#d35400" stroke="#2d3436" stroke-width="2">
+                    <rect x="50" y="380" width="10" height="80" rx="2" />
+                    <rect x="200" y="390" width="10" height="80" rx="2" />
+                    <rect x="350" y="400" width="10" height="80" rx="2" />
+                    <rect x="500" y="400" width="10" height="80" rx="2" />
+                    <rect x="650" y="390" width="10" height="80" rx="2" />
+                    <rect x="800" y="380" width="10" height="80" rx="2" />
+                    <rect x="950" y="370" width="10" height="80" rx="2" />
+                    <rect x="0" y="400" width="1000" height="8" />
+                    <rect x="0" y="430" width="1000" height="8" />
+                </g>
+                <path d="M-50,440 Q250,380 500,450 T1050,420 L1050,562.5 L-50,562.5 Z" fill="url(#hill-grad-segiempat)" />
+                <path d="M-50,470 Q350,440 700,480 T1050,460 L1050,562.5 L-50,562.5 Z" fill="#27ae60" opacity="0.8" />
+            </svg>
+
+            <div class="apersepsi-layout">
+                <!-- Left Side: Teacher & Speech Bubble -->
+                <div class="char-container left-char">
+                    <div class="speech-bubble left float-anim">
+                        Anak-anak, perhatikan jam dinding, papan tulis, rambu lalu lintas, layang-layang, panel surya, dan tas belanja berikut. Kalian tentu sering menjumpai benda-benda tersebut di sekitar kita, bukan?
+                    </div>
+                    <img src="assets/images/hijab_teacher.png" alt="Guru Hijab" class="character-svg teacher-char float-anim-delay-1">
+                </div>
+
+                <!-- Center: Cards Grid -->
+                <div class="apersepsi-cards-grid">
+                    <!-- Row 1: 4 cards -->
+                    <div class="apersepsi-card float-anim-delay-1" onclick="app.goToExplorationFromApersepsi('segiempat', 'jajargenjang')">
+                        <div class="apersepsi-svg-wrapper">
+                            <!-- Panel Surya -->
+                            <svg viewBox="0 0 100 80" class="showcase-svg">
+                                <polygon points="20,15 80,15 90,65 10,65" fill="#2c3e50" stroke="#7f8c8d" stroke-width="4" />
+                                <line x1="35" y1="15" x2="30" y2="65" stroke="#bdc3c7" stroke-width="2" />
+                                <line x1="50" y1="15" x2="50" y2="65" stroke="#bdc3c7" stroke-width="2" />
+                                <line x1="65" y1="15" x2="70" y2="65" stroke="#bdc3c7" stroke-width="2" />
+                                <line x1="17" y1="30" x2="83" y2="30" stroke="#bdc3c7" stroke-width="2" />
+                                <line x1="14" y1="48" x2="86" y2="48" stroke="#bdc3c7" stroke-width="2" />
+                            </svg>
+                        </div>
+                        <span class="card-badge blue">Panel Surya</span>
+                    </div>
+                    <div class="apersepsi-card float-anim-delay-2" onclick="app.goToExplorationFromApersepsi('segiempat', 'belahketupat')">
+                        <div class="apersepsi-svg-wrapper">
+                            <!-- Rambu Lalu Lintas -->
+                            <svg viewBox="0 0 100 80" class="showcase-svg">
+                                <polygon points="50,5 85,40 50,75 15,40" fill="#f1c40f" stroke="#2c3e50" stroke-width="4" />
+                                <polygon points="50,9 80,40 50,71 20,40" fill="none" stroke="#2c3e50" stroke-width="1.5" />
+                                <rect x="44" y="22" width="12" height="36" rx="4" fill="#2d3436" />
+                                <circle cx="50" cy="28" r="4" fill="#e74c3c" />
+                                <circle cx="50" cy="40" r="4" fill="#f1c40f" />
+                                <circle cx="50" cy="52" r="4" fill="#2ecc71" />
+                            </svg>
+                        </div>
+                        <span class="card-badge purple">Rambu Lalu Lintas</span>
+                    </div>
+                    <div class="apersepsi-card float-anim-delay-3" onclick="app.goToExplorationFromApersepsi('segiempat', 'layanglayang')">
+                        <div class="apersepsi-svg-wrapper">
+                            <!-- Layang-layang -->
+                            <svg viewBox="0 0 100 80" class="showcase-svg">
+                                <polygon points="50,10 80,35 50,70 20,35" fill="#3498db" stroke="#2d3436" stroke-width="2.5" stroke-linejoin="round" />
+                                <line x1="50" y1="10" x2="50" y2="70" stroke="#2d3436" stroke-width="1.5" />
+                                <line x1="20" y1="35" x2="80" y2="35" stroke="#2d3436" stroke-width="1.5" />
+                                <polygon points="50,10 80,35 50,35" fill="#e74c3c" opacity="0.8" />
+                                <polygon points="50,10 20,35 50,35" fill="#f1c40f" opacity="0.8" />
+                                <polygon points="50,35 80,35 50,70" fill="#2ecc71" opacity="0.8" />
+                                <path d="M50,70 Q55,75 52,80 T56,86" fill="none" stroke="#2d3436" stroke-width="2" />
+                            </svg>
+                        </div>
+                        <span class="card-badge green">Layang Layang</span>
+                    </div>
+                    <div class="apersepsi-card float-anim-delay-1" onclick="app.goToExplorationFromApersepsi('segiempat', 'trapesium')">
+                        <div class="apersepsi-svg-wrapper">
+                            <!-- Tas Belanja -->
+                            <svg viewBox="0 0 100 80" class="showcase-svg">
+                                <path d="M43,20 C43,12 57,12 57,20" fill="none" stroke="#2d3436" stroke-width="2.5" stroke-linecap="round" />
+                                <polygon points="30,25 70,25 80,70 20,70" fill="#e74c3c" stroke="#2d3436" stroke-width="3" stroke-linejoin="round" />
+                                <polygon points="32,28 68,28 77,67 23,67" fill="#ff7675" />
+                            </svg>
+                        </div>
+                        <span class="card-badge yellow">Tas Belanja</span>
                     </div>
 
-                    <!-- Segiempat Examples -->
-                    <div class="apersepsi-col">
-                        <h3 class="shape-type-title color-blue">Benda Berbentuk Segiempat</h3>
-                        <div class="item-showcase-row">
-                            <div class="item-card">
-                                <div class="item-svg-box">
-                                    <!-- Wall Clock -->
-                                    <svg viewBox="0 0 100 80" class="showcase-svg">
-                                        <rect x="20" y="10" width="60" height="60" rx="10" fill="#3498db"
-                                            stroke="#2980b9" stroke-width="4" />
-                                        <circle cx="50" cy="40" r="22" fill="#fff" stroke="#2c3e50" stroke-width="2" />
-                                        <line x1="50" y1="40" x2="50" y2="26" stroke="#2c3e50" stroke-width="3"
-                                            stroke-linecap="round" />
-                                        <line x1="50" y1="40" x2="62" y2="40" stroke="#e74c3c" stroke-width="2"
-                                            stroke-linecap="round" />
-                                    </svg>
-                                </div>
-                                <span>Jam Dinding</span>
-                            </div>
-                            <div class="item-card">
-                                <div class="item-svg-box">
-                                    <!-- Road Sign (Yellow Diamond) -->
-                                    <svg viewBox="0 0 100 80" class="showcase-svg">
-                                        <polygon points="50,5 85,40 50,75 15,40" fill="#f1c40f" stroke="#2c3e50"
-                                            stroke-width="4" />
-                                        <!-- Sloping car symbol inside -->
-                                        <path d="M35,48 L45,43 L65,43 L70,48" stroke="#2c3e50" stroke-width="3"
-                                            fill="none" />
-                                        <circle cx="43" cy="51" r="3" fill="#2c3e50" />
-                                        <circle cx="62" cy="51" r="3" fill="#2c3e50" />
-                                    </svg>
-                                </div>
-                                <span>Rambu Jalan</span>
-                            </div>
-                            <div class="item-card">
-                                <div class="item-svg-box">
-                                    <!-- Solar Panel -->
-                                    <svg viewBox="0 0 100 80" class="showcase-svg">
-                                        <polygon points="20,15 80,15 90,65 10,65" fill="#2c3e50" stroke="#7f8c8d"
-                                            stroke-width="4" />
-                                        <!-- Grid lines -->
-                                        <line x1="35" y1="15" x2="30" y2="65" stroke="#bdc3c7" stroke-width="2" />
-                                        <line x1="50" y1="15" x2="50" y2="65" stroke="#bdc3c7" stroke-width="2" />
-                                        <line x1="65" y1="15" x2="70" y2="65" stroke="#bdc3c7" stroke-width="2" />
-                                        <line x1="17" y1="30" x2="83" y2="30" stroke="#bdc3c7" stroke-width="2" />
-                                        <line x1="14" y1="48" x2="86" y2="48" stroke="#bdc3c7" stroke-width="2" />
-                                    </svg>
-                                </div>
-                                <span>Panel Surya</span>
-                            </div>
+                    <!-- Row 2: 2 cards -->
+                    <div class="apersepsi-card float-anim-delay-2" onclick="app.goToExplorationFromApersepsi('segiempat', 'persegi')">
+                        <div class="apersepsi-svg-wrapper">
+                            <!-- Jam Dinding -->
+                            <svg viewBox="0 0 100 80" class="showcase-svg">
+                                <rect x="20" y="10" width="60" height="60" rx="8" fill="#bdc3c7" stroke="#2d3436" stroke-width="3.5" />
+                                <rect x="24" y="14" width="52" height="52" rx="4" fill="#ffffff" />
+                                <circle cx="50" cy="18" r="1.5" fill="#2d3436" />
+                                <circle cx="50" cy="62" r="1.5" fill="#2d3436" />
+                                <circle cx="28" cy="40" r="1.5" fill="#2d3436" />
+                                <circle cx="72" cy="40" r="1.5" fill="#2d3436" />
+                                <line x1="50" y1="40" x2="50" y2="24" stroke="#2d3436" stroke-width="2.5" stroke-linecap="round" />
+                                <line x1="50" y1="40" x2="64" y2="40" stroke="#e74c3c" stroke-width="1.8" stroke-linecap="round" />
+                                <circle cx="50" cy="40" r="3" fill="#2d3436" />
+                            </svg>
                         </div>
+                        <span class="card-badge yellow">Jam Dinding</span>
                     </div>
+                    <div class="apersepsi-card float-anim-delay-3" onclick="app.goToExplorationFromApersepsi('segiempat', 'persegipanjang')">
+                        <div class="apersepsi-svg-wrapper">
+                            <!-- Papan Tulis -->
+                            <svg viewBox="0 0 100 80" class="showcase-svg">
+                                <rect x="10" y="15" width="80" height="50" rx="4" fill="#a0522d" stroke="#2d3436" stroke-width="3" />
+                                <rect x="15" y="20" width="70" height="40" fill="#27ae60" />
+                                <rect x="70" y="56" width="8" height="2" fill="#ffffff" />
+                                <rect x="62" y="55" width="6" height="3" fill="#d35400" />
+                            </svg>
+                        </div>
+                        <span class="card-badge red">Papan Tulis</span>
+                    </div>
+                </div>
+
+                <!-- Right Side: Student & Speech Bubble -->
+                <div class="char-container right-char">
+                    <div class="speech-bubble right float-anim-delay-2">
+                        Semua benda tersebut memiliki bentuk segiempat. Namun, apakah panjang sisi dan besar sudut pada setiap benda sama? Coba amati dengan teliti ciri-ciri pada benda yang kalian peroleh.
+                    </div>
+                    <img src="assets/images/hijab_student.png" alt="Siswa Hijab" class="character-svg student-char float-anim-delay-2">
                 </div>
             </div>
         </section>
@@ -360,13 +479,13 @@
                     <!-- Presets Selector -->
                     <div class="preset-selector">
                         <button class="preset-btn active" id="btn-tri-samasisi"
-                            onclick="app.setTrianglePreset('samasisi')">Sama Sisi</button>
+                            onclick="app.setTrianglePreset('samasisi')">Tricky Triangle (Sama Sisi)</button>
                         <button class="preset-btn" id="btn-tri-samakaki"
-                            onclick="app.setTrianglePreset('samakaki')">Sama Kaki</button>
+                            onclick="app.setTrianglePreset('samakaki')">Gantungan Baju (Sama Kaki)</button>
                         <button class="preset-btn" id="btn-tri-sikusiku"
-                            onclick="app.setTrianglePreset('sikusiku')">Siku-Siku</button>
+                            onclick="app.setTrianglePreset('sikusiku')">Potongan Sandwich (Siku-Siku)</button>
                         <button class="preset-btn" id="btn-tri-sembarang"
-                            onclick="app.setTrianglePreset('sembarang')">Sembarang</button>
+                            onclick="app.setTrianglePreset('sembarang')">Segitiga Sembarang</button>
                     </div>
 
                     <!-- Shape Display Board -->
@@ -386,6 +505,8 @@
                                     </pattern>
                                 </defs>
                                 <rect width="100%" height="100%" fill="url(#grid)" />
+                                <!-- Preset detailed shape drawing background -->
+                                <g id="preset-drawing-bg"></g>
 
                                 <!-- Sides -->
                                 <g class="interactive-edge" data-edge="AB" onclick="app.clickEdge('AB')">
@@ -507,17 +628,17 @@
                     <!-- Presets Selector -->
                     <div class="preset-selector scrollable-x">
                         <button class="preset-btn active" id="btn-quad-persegi"
-                            onclick="app.setQuadPreset('persegi')">Persegi</button>
+                            onclick="app.setQuadPreset('persegi')">Jam Dinding (Persegi)</button>
                         <button class="preset-btn" id="btn-quad-persegipanjang"
-                            onclick="app.setQuadPreset('persegipanjang')">Persegi Panjang</button>
+                            onclick="app.setQuadPreset('persegipanjang')">Papan Tulis (Persegi Panjang)</button>
                         <button class="preset-btn" id="btn-quad-jajargenjang"
-                            onclick="app.setQuadPreset('jajargenjang')">Jajargenjang</button>
+                            onclick="app.setQuadPreset('jajargenjang')">Panel Surya (Jajargenjang)</button>
                         <button class="preset-btn" id="btn-quad-trapesium"
-                            onclick="app.setQuadPreset('trapesium')">Trapesium</button>
+                            onclick="app.setQuadPreset('trapesium')">Tas Belanja (Trapesium)</button>
                         <button class="preset-btn" id="btn-quad-layanglayang"
                             onclick="app.setQuadPreset('layanglayang')">Layang-layang</button>
                         <button class="preset-btn" id="btn-quad-belahketupat"
-                            onclick="app.setQuadPreset('belahketupat')">Belah Ketupat</button>
+                            onclick="app.setQuadPreset('belahketupat')">Rambu Lalu Lintas (Belah Ketupat)</button>
                     </div>
 
                     <!-- Shape Display Board -->
@@ -531,6 +652,8 @@
                         <div class="svg-wrapper">
                             <svg viewBox="0 0 400 280" id="svg-quad" class="interactive-svg">
                                 <rect width="100%" height="100%" fill="url(#grid)" />
+                                <!-- Preset detailed shape drawing background -->
+                                <g id="qpreset-drawing-bg"></g>
                                 <!-- Sides -->
                                 <g class="interactive-edge" data-edge="AB" onclick="app.clickQuadEdge('AB')">
                                     <line x1="120" y1="50" x2="280" y2="50" class="edge-line" id="qline-AB" />
@@ -787,6 +910,11 @@
                             <i class="fas fa-arrows-alt"></i> Tarik (drag) kepingan bangun datar di sebelah kanan ke
                             dalam cetakan bayangan putih yang cocok!
                         </div>
+                        
+                        <!-- Info Popup -->
+                        <div id="composition-info-popup" class="measurement-popup hide">
+                            <span id="composition-info-text">Klik kepingan untuk melihat ciri-cirinya!</span>
+                        </div>
 
                         <!-- Snapping Workspace Containers -->
                         <div class="puzzle-workspace">
@@ -914,6 +1042,11 @@
                         <div class="instruction-bubble">
                             <i class="fas fa-hand-scissors"></i> Tarik kepingan bangun datar dari gambar rumah di kiri,
                             lalu masukkan ke dalam <strong>keranjang pengelompokan yang tepat</strong> di kanan!
+                        </div>
+                        
+                        <!-- Info Popup -->
+                        <div id="decomposition-info-popup" class="measurement-popup hide">
+                            <span id="decomposition-info-text">Klik kepingan untuk melihat ciri-cirinya!</span>
                         </div>
 
                         <div class="decomposition-workspace">
