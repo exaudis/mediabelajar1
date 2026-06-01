@@ -2325,15 +2325,14 @@ body {
 .apersepsi-cards-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* Balanced 3x2 grid */
-    grid-gap: 12px;
+    grid-gap: 8px;
     z-index: 3;
-    flex: 1;
+    flex: none; /* Do NOT stretch – keep natural height */
     padding: 0 10px;
     justify-content: center;
     align-content: start;
-    align-self: flex-start; /* Prevents vertical stretching so height remains auto */
-    margin-top: 25px; /* Positioned higher up in the middle of the sky */
-    height: auto;
+    align-self: flex-start;
+    margin-top: 15px;
 }
 
 .apersepsi-card {
@@ -2354,10 +2353,10 @@ body {
 }
 
 .apersepsi-cards-grid .apersepsi-card {
-    width: 110px;
-    height: 120px;
-    padding: 8px;
-    border-radius: 18px;
+    width: 100px;
+    height: 105px;
+    padding: 6px;
+    border-radius: 16px;
 }
 
 .apersepsi-card:hover {
@@ -2379,7 +2378,7 @@ body {
 }
 
 .apersepsi-cards-grid .apersepsi-svg-wrapper {
-    height: 60px;
+    height: 52px;
 }
 
 .apersepsi-svg-wrapper svg {
