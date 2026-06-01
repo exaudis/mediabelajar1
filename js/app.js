@@ -981,17 +981,21 @@ class MathApp {
             ];
         }
 
+        // Calculate SVG scale
+        const svg = document.getElementById('composition-svg');
+        const svgRect = svg.getBoundingClientRect();
+        const svgScale = svgRect.width > 0 ? (svgRect.width / 450) : 1;
+        dragContainer.style.setProperty('--svg-scale', svgScale);
+
         // Render each piece floating in dock shelf on the right
         pieces.forEach((p, idx) => {
             const pieceDiv = document.createElement('div');
             pieceDiv.className = 'puzzle-piece';
             pieceDiv.id = `comp-piece-${p.id}`;
             pieceDiv.setAttribute('data-target-id', p.id);
+            pieceDiv.setAttribute('data-w', p.w);
+            pieceDiv.setAttribute('data-h', p.h);
             
-            // Fixed docking position on the right panel
-            const pos = this.compositionStartingPositions[idx];
-            pieceDiv.style.left = `${pos.x - p.w/2}px`;
-            pieceDiv.style.top = `${pos.y - p.h/2}px`;
             pieceDiv.style.width = `${p.w}px`;
             pieceDiv.style.height = `${p.h}px`;
 
@@ -1000,6 +1004,20 @@ class MathApp {
 
             // Append to workspace container
             dragContainer.appendChild(pieceDiv);
+
+            // Position relative to #draggable-container using SVG coordinates
+            const pos = this.compositionStartingPositions[idx];
+            const pt = svg.createSVGPoint();
+            pt.x = pos.x;
+            pt.y = pos.y;
+            const screenPoint = pt.matrixTransform(svg.getScreenCTM());
+            const containerRect = dragContainer.getBoundingClientRect();
+            
+            const left = screenPoint.x - containerRect.left - (p.w / 2);
+            const top = screenPoint.y - containerRect.top - (p.h / 2);
+            
+            pieceDiv.style.left = `${left}px`;
+            pieceDiv.style.top = `${top}px`;
 
             // Bind drag handlers
             this.bindSVGDragHandlers(pieceDiv, p.id);
@@ -1056,7 +1074,7 @@ class MathApp {
             if (!isDragging) return;
             isDragging = false;
 
-            // Get bounding rect at scale 1.0 before removing dragging class
+            // Get bounding rect before removing dragging class
             const elRect = el.getBoundingClientRect();
             el.classList.remove('dragging');
             el.style.cursor = 'grab';
@@ -1096,8 +1114,11 @@ class MathApp {
                 // Position relative to #draggable-container
                 const container = document.getElementById('draggable-container');
                 const containerRect = container.getBoundingClientRect();
-                const targetLeft = screenPoint.x - containerRect.left - elRect.width / 2;
-                const targetTop = screenPoint.y - containerRect.top - elRect.height / 2;
+                
+                const baseW = parseFloat(el.getAttribute('data-w'));
+                const baseH = parseFloat(el.getAttribute('data-h'));
+                const targetLeft = screenPoint.x - containerRect.left - baseW / 2;
+                const targetTop = screenPoint.y - containerRect.top - baseH / 2;
 
                 el.style.left = `${targetLeft}px`;
                 el.style.top = `${targetTop}px`;
@@ -1367,21 +1388,47 @@ class MathApp {
                 const ctm = svg.getScreenCTM();
                 if (!ctm) return;
                 
+                // Update SVG scale CSS variable
+                const svgRect = svg.getBoundingClientRect();
+                const svgScale = svgRect.width > 0 ? (svgRect.width / 450) : 1;
+                container.style.setProperty('--svg-scale', svgScale);
+
                 const containerRect = container.getBoundingClientRect();
                 const targetConfig = this.compositionTargets[this.compositionTemplate];
+                
                 for (let key in targetConfig) {
                     const config = targetConfig[key];
-                    if (config.snapped) {
-                        const el = document.getElementById(`comp-piece-${key}`);
-                        if (el) {
-                            const elRect = el.getBoundingClientRect();
+                    const el = document.getElementById(`comp-piece-${key}`);
+                    if (el) {
+                        const baseW = parseFloat(el.getAttribute('data-w') || 100);
+                        const baseH = parseFloat(el.getAttribute('data-h') || 100);
+                        
+                        if (config.snapped) {
+                            // Target center mapping
                             const targetPoint = svg.createSVGPoint();
                             targetPoint.x = config.targetCenter.x;
                             targetPoint.y = config.targetCenter.y;
                             const screenPoint = targetPoint.matrixTransform(ctm);
                             
-                            const targetLeft = screenPoint.x - containerRect.left - elRect.width / 2;
-                            const targetTop = screenPoint.y - containerRect.top - elRect.height / 2;
+                            const targetLeft = screenPoint.x - containerRect.left - baseW / 2;
+                            const targetTop = screenPoint.y - containerRect.top - baseH / 2;
+                            
+                            el.style.left = `${targetLeft}px`;
+                            el.style.top = `${targetTop}px`;
+                        } else {
+                            // Unsnapped / Docked pieces mapping
+                            const idx = this.compositionTemplate === 'house' ? 
+                                (key === 'roof' ? 0 : key === 'body' ? 1 : 2) :
+                                (key === 'hull' ? 0 : key === 'sail-big' ? 1 : 2);
+                            const pos = this.compositionStartingPositions[idx];
+                            
+                            const pt = svg.createSVGPoint();
+                            pt.x = pos.x;
+                            pt.y = pos.y;
+                            const screenPoint = pt.matrixTransform(ctm);
+                            
+                            const targetLeft = screenPoint.x - containerRect.left - baseW / 2;
+                            const targetTop = screenPoint.y - containerRect.top - baseH / 2;
                             
                             el.style.left = `${targetLeft}px`;
                             el.style.top = `${targetTop}px`;

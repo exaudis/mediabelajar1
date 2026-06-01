@@ -1306,13 +1306,13 @@ body {
     user-select: none;
     z-index: 100;
     transition: transform 0.15s ease, opacity 0.15s ease;
-    transform: scale(0.5);
+    transform: scale(calc(var(--svg-scale, 1) * 0.5));
     transform-origin: center;
 }
 
 .puzzle-piece.dragging {
     cursor: grabbing;
-    transform: scale(1) !important;
+    transform: scale(var(--svg-scale, 1)) !important;
     z-index: 1000;
 }
 
@@ -1320,7 +1320,7 @@ body {
     cursor: default;
     pointer-events: none;
     z-index: 10;
-    transform: scale(1) !important;
+    transform: scale(var(--svg-scale, 1)) !important;
 }
 
 /* Templates switching */
@@ -1675,4 +1675,447 @@ body {
     transform: none !important;
     cursor: not-allowed;
     opacity: 0.6;
+}
+
+/* ================= RESPONSIVE MOBILE STYLES ================= */
+@media (max-width: 768px) {
+    body {
+        padding: 0;
+        overflow: hidden;
+    }
+
+    .game-container {
+        max-width: 100%;
+        width: 100vw;
+        height: 100vh;
+        height: -webkit-fill-available;
+        aspect-ratio: auto;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .screen {
+        height: calc(100% - 60px); /* 60px footer height on mobile */
+        overflow-y: auto;
+        padding: 15px 12px;
+    }
+
+    .screen::-webkit-scrollbar {
+        width: 6px;
+    }
+    .screen::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .screen::-webkit-scrollbar-thumb {
+        background-color: rgba(45, 52, 54, 0.3);
+        border-radius: 10px;
+    }
+
+    .sound-btn {
+        top: 10px;
+        right: 10px;
+        width: 38px;
+        height: 38px;
+        font-size: 1.1rem;
+        border-width: 2px;
+        box-shadow: 0 3px 0 var(--shadow-color);
+    }
+
+    /* 1. Welcome Screen */
+    .welcome-title {
+        font-size: 2.2rem;
+        margin-bottom: 15px;
+    }
+    .subtitle-box {
+        margin-bottom: 25px;
+        padding: 10px 15px;
+        width: 90%;
+    }
+    .subtitle-box p {
+        font-size: 1rem;
+    }
+    .btn-green-large {
+        font-size: 1.6rem;
+        padding: 10px 40px;
+        border-radius: 18px;
+    }
+
+    /* Developer Profile Screen */
+    .profil-card {
+        max-width: 320px;
+        border-width: 4px;
+    }
+    .profil-card-border {
+        padding: 20px 15px;
+    }
+    .profil-icon-box {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 10px;
+    }
+    .profil-icon {
+        font-size: 1.5rem;
+    }
+    .profil-name {
+        font-size: 1.3rem;
+    }
+    .profil-details p {
+        font-size: 0.85rem;
+        gap: 6px;
+    }
+
+    /* Card layouts (Instructions & Objectives) */
+    .card-layout {
+        flex-direction: column;
+        gap: 15px;
+        height: auto;
+        width: 100%;
+    }
+    .card-layout.reverse {
+        flex-direction: column;
+    }
+    .mascot-side {
+        flex: none;
+        height: auto;
+    }
+    .mascot-img {
+        max-height: 120px;
+    }
+    .info-card {
+        flex: none;
+        width: 100%;
+        height: auto;
+    }
+    .card-header h2, .card-header h3 {
+        font-size: 0.95rem;
+    }
+    .card-body {
+        padding: 15px 12px;
+    }
+    .instruction-row {
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    .instruction-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+    .instruction-text {
+        font-size: 0.9rem;
+    }
+    .objectives-list li {
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+    }
+
+    /* Main Menu Screen */
+    #screen-menu {
+        padding-top: 15px;
+    }
+    .menu-layout {
+        width: 100%;
+    }
+    .wood-title {
+        padding: 6px 20px;
+        margin-bottom: 20px;
+    }
+    .wood-title span {
+        font-size: 1.3rem;
+    }
+    .menu-grid {
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+        max-width: 320px;
+    }
+    .menu-card {
+        height: auto;
+        border-radius: 16px;
+    }
+    .menu-card-header {
+        padding: 8px 12px;
+    }
+    .menu-card-header h3 {
+        font-size: 1.1rem;
+    }
+    .menu-card-header p {
+        font-size: 0.7rem;
+    }
+    .menu-card-body {
+        padding: 10px;
+    }
+    .shapes-preview {
+        margin-bottom: 8px;
+    }
+    .mini-svg {
+        width: 36px;
+        height: 36px;
+    }
+    .btn-menu-action {
+        font-size: 0.85rem;
+        padding: 4px 15px;
+    }
+    .stilts-mascot {
+        display: none;
+    }
+
+    /* Pertemuan 1 Intro */
+    .pencil-banner {
+        max-width: 90%;
+        margin-bottom: 15px;
+    }
+    .pencil-banner span {
+        font-size: 0.95rem;
+    }
+    .intro-content-box {
+        padding: 12px;
+    }
+    .story-text {
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+    .kids-group-img {
+        max-height: 100px;
+    }
+
+    /* Pertemuan 1 Apersepsi */
+    .activity-title {
+        font-size: 1.4rem;
+    }
+    .activity-subtitle {
+        font-size: 0.85rem;
+        margin-bottom: 12px;
+    }
+    .apersepsi-grid {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .apersepsi-col {
+        padding: 10px;
+    }
+    .shape-type-title {
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+    }
+    .item-showcase-row {
+        gap: 8px;
+    }
+    .item-card {
+        max-width: 80px;
+        border-radius: 12px;
+    }
+    .item-svg-box {
+        width: 40px;
+        height: 35px;
+    }
+    .item-card span {
+        font-size: 0.6rem;
+    }
+
+    /* Pertemuan 1 Eksplorasi Segitiga & Segiempat Workspace */
+    .workspace-layout {
+        flex-direction: column;
+        gap: 12px;
+        overflow-y: auto;
+        height: auto;
+    }
+    .manipulative-area {
+        flex: none;
+        width: 100%;
+        height: auto;
+        min-height: 320px;
+        border-width: 3px;
+        border-radius: 16px;
+        padding: 8px;
+    }
+    .area-header {
+        margin-bottom: 8px;
+        gap: 8px;
+    }
+    .area-header h2 {
+        font-size: 1.05rem;
+    }
+    .badge {
+        font-size: 0.75rem;
+        padding: 3px 8px;
+    }
+    .preset-selector {
+        gap: 6px;
+        margin-bottom: 8px;
+    }
+    .preset-btn {
+        font-size: 0.75rem;
+        padding: 4px 10px;
+        border-radius: 8px;
+    }
+    .canvas-board {
+        min-height: 220px;
+        border-radius: 12px;
+    }
+    .instruction-bubble {
+        position: relative;
+        top: 0;
+        left: 0;
+        right: 0;
+        margin-bottom: 6px;
+        font-size: 0.75rem;
+        padding: 4px 8px;
+    }
+    .svg-wrapper {
+        margin-top: 0;
+    }
+    .interactive-svg {
+        max-height: 180px;
+    }
+    .measurement-popup {
+        bottom: 8px;
+        padding: 6px 12px;
+        font-size: 0.75rem;
+    }
+    .sidebar-card {
+        flex: none;
+        width: 100%;
+        height: auto;
+        border-width: 3px;
+        border-radius: 16px;
+    }
+    .data-table {
+        margin-bottom: 8px;
+    }
+    .data-table th, .data-table td {
+        padding: 3px;
+        font-size: 0.7rem;
+    }
+    .identification-box {
+        padding: 8px;
+    }
+    .identification-box h4 {
+        font-size: 0.8rem;
+    }
+    .quiz-instruction-text {
+        font-size: 0.65rem;
+    }
+    .quiz-options {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 4px;
+    }
+    .quiz-opt, .quiz-opt-q {
+        font-size: 0.65rem;
+        padding: 5px;
+    }
+
+    /* Conclusion screens */
+    .conclusion-layout {
+        gap: 15px;
+        padding: 20px;
+    }
+    .trophy-box {
+        font-size: 3.5rem;
+    }
+    .conclusion-layout h2 {
+        font-size: 1.4rem;
+    }
+
+    /* Pertemuan 2 Apersepsi */
+    .apersepsi-grid-p2 {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .apersepsi-card-p2 {
+        padding: 10px;
+        border-radius: 16px;
+    }
+    .apersepsi-svg-box-p2 {
+        height: 100px;
+        margin-bottom: 8px;
+    }
+    .apersepsi-card-p2 h3 {
+        font-size: 0.95rem;
+    }
+    .apersepsi-card-p2 p {
+        font-size: 0.75rem;
+    }
+
+    /* Pertemuan 2 Komposisi (Susun Bangun) */
+    .template-selector {
+        gap: 6px;
+        margin-bottom: 12px;
+    }
+    .tab-select {
+        font-size: 0.75rem;
+        padding: 4px;
+    }
+    .pieces-info-list {
+        gap: 6px;
+    }
+    .piece-info-row {
+        font-size: 0.75rem;
+    }
+    .btn-blue-outline {
+        font-size: 0.8rem;
+        padding: 6px;
+    }
+
+    /* Pertemuan 2 Dekomposisi (Urai Bangun) */
+    .decomposition-workspace {
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 10px;
+    }
+    .compound-object-source {
+        flex: none;
+        width: 280px;
+        height: 250px;
+        margin: 0 auto;
+    }
+    .baskets-container {
+        flex: none;
+        width: 100%;
+        padding-left: 0;
+        height: auto;
+        gap: 10px;
+    }
+    .basket-card {
+        height: 85px;
+    }
+    .basket-header {
+        font-size: 0.8rem;
+        padding: 4px 10px;
+    }
+    .basket-contents {
+        padding: 6px;
+    }
+    .basket-placeholder {
+        font-size: 0.75rem;
+    }
+    .decomp-status-list li {
+        font-size: 0.75rem;
+    }
+    .info-bubble-green {
+        font-size: 0.72rem;
+        padding: 8px 10px;
+    }
+
+    /* Global Navigation Footer */
+    .nav-footer {
+        height: 60px;
+        padding: 0 10px;
+    }
+    .nav-btn {
+        font-size: 0.85rem;
+        padding: 6px 12px;
+        border-width: 2.5px;
+        border-radius: 12px;
+    }
+    .nav-btn i {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .quiz-options {
+        grid-template-columns: 1fr;
+    }
 }
